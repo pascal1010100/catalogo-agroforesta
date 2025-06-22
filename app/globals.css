@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   Paleta de colores suaves y accesibles
+   ========================= */
+:root {
+  --background:     #f4f6f4;   /* Fondo general claro */
+  --foreground:     #243f2f;   /* Texto principal, verde oscuro */
+  --card:           #e9f0e9;   /* Fondo de tarjetas */
+  --primary-light:  #e6f4ea;   /* Acento pálido para secciones */
+  --accent:         #a7d7c5;   /* Acento suave */
+  --border:         #d0e2d0;   /* Bordes claros */
+  --focus:          #2ecc40;   /* Verde para foco accesible */
+  --error:          #e57373;   /* Rojo suave para mensajes de error */
+}
+
+/* =========================
+   Modo oscuro
+   ========================= */
+html.dark {
+  --background:     #101d12;
+  --foreground:     #e5ffe5;
+  --card:           #1a2d1f;
+  --primary-light:  #213d2a;
+  --accent:         #6fc7a3;
+  --border:         #263d2b;
+  --focus:          #6fc7a3;
+  --error:          #e57373;
+}
+
+/* =========================
+   Aplicación de variables globales
+   ========================= */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.2s, color 0.2s;
+  font-family: var(--font-geist-sans, sans-serif);
+}
+
+/* =========================
+   Navegación suave para anclas internas
+   ========================= */
+html {
+  scroll-behavior: smooth;
+}
+
+/* =========================
+   Utilidades personalizadas para usar con Tailwind
+   ========================= */
+.bg-background     { background-color: var(--background) !important; }
+.bg-card           { background-color: var(--card) !important; }
+.bg-primary-light  { background-color: var(--primary-light) !important; }
+.text-foreground   { color: var(--foreground) !important; }
+.text-accent       { color: var(--accent) !important; }
+.border-custom     { border-color: var(--border) !important; }
+.focus-ring-custom:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =========================
+   Mejoras de accesibilidad y experiencia
+   ========================= */
+a, button, input, textarea, select {
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* =========================
+   Padding para secciones si el navbar es sticky
+   ========================= */
+section {
+  scroll-margin-top: 80px; /* Ajusta según la altura real de tu navbar */
+}
+
+/* =========================
+   Mensajes de error (opcional)
+   ========================= */
+.text-error {
+  color: var(--error) !important;
+}
+.bg-error {
+  background-color: var(--error) !important;
+}
