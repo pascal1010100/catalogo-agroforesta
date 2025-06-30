@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       <ul>
         ${productos
           .map(
-            (p: any) =>
+            (p: { name: string; quantity: number; price: number }) =>
               `<li>${p.name} (x${p.quantity}) - Q${p.price.toFixed(2)}</li>`
           )
           .join("")}
@@ -46,9 +46,15 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true, emailData });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Registra el error en consola para diagnóstico
     console.error("Error general en send-order:", error);
-    return NextResponse.json({ ok: false, error: error.message || "Error desconocido" }, { status: 500 });
+    let errorMessage = "Error desconocido";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === "string") {
+      errorMessage = error as string;
+    }
+    return NextResponse.json({ ok: false, error: errorMessage }, { status: 500 });
   }
 }

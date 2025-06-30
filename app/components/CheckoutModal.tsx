@@ -40,8 +40,8 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       if (!res.ok) throw new Error("No se pudo enviar el pedido.");
       setSuccess(true);
       clearCart();
-    } catch (err: any) {
-      setError(err.message || "Error desconocido");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
       setLoading(false);
     }
