@@ -24,7 +24,7 @@ export const products: Product[] = [
     name: "Green Garden Universal",
     description: "Fertilizante universal para todo tipo de plantas.",
     category: "Fertilizantes",
-    image: "/images/fertilizantes/green-garden-universal.png",
+    image: "/images/fertilizantes/happy-plant-floracion.png",
     price: 89.50,
     prices: {
       minorista: 65.00,
@@ -84,7 +84,7 @@ export const products: Product[] = [
     name: "Green Garden Orquídeas",
     description: "Fertilizante específico para orquídeas.",
     category: "Fertilizantes",
-    image: "/images/fertilizantes/green-garden-orquideas.png",
+    image: "/images/fertilizantes/happy-plant-floracion.png",
     price: 89.50,
     prices: {
       minorista: 65.00,
@@ -99,7 +99,7 @@ export const products: Product[] = [
     name: "Green Garden Hidropónica Mayor I",
     description: "Fertilizante para cultivos hidropónicos.",
     category: "Fertilizantes",
-    image: "/images/fertilizantes/green-garden-hidroponica.jpg",
+    image: "/images/fertilizantes/happy-plant-floracion.png",
     price: 83.65,
     prices: {
       minorista: 60.00,
@@ -316,7 +316,7 @@ export const products: Product[] = [
     name: "Cortacésped CG620-T4 Motor Subaru",
     description: "Cortacésped con motor Subaru.",
     category: "Maquinaria",
-    image: "/images/maquinaria/cortacesped-cg620-t4.png",
+    image: "/images/maquinaria/cortacesped-cg620-t41.png",
     price: 5200.00,
     prices: {
       mayorista: 4680.00,
@@ -385,7 +385,7 @@ export const products: Product[] = [
     model: "S-20",
     description: "Pulverizador manual S-20.",
     category: "Maquinaria",
-    image: "/images/maquinaria/pulverizador-s-20.jpg",
+    image: "/images/maquinaria/pulverizador-s-20.png",
     price: 575.00,
     prices: {
       mayorista: 425.00,
@@ -441,7 +441,7 @@ export const products: Product[] = [
     model: "T-26",
     description: "Desmalezadora T-26 para trabajos exigentes.",
     category: "Maquinaria",
-    image: "/images/maquinaria/desmalezadora-t-26.jpg",
+    image: "/images/maquinaria/desmalezadora-t-26.png",
     price: 2900.00,
     prices: {
       mayorista: 2150.00,
@@ -468,7 +468,7 @@ export const products: Product[] = [
     model: "BC-35",
     description: "Desmalezadora BC-35 robusta y eficiente.",
     category: "Maquinaria",
-    image: "/images/maquinaria/desmalezadora-bc-35.jpg",
+    image: "/images/maquinaria/desmalezadora-bc-35.png",
     price: 3998.00,
     prices: {
       mayorista: 3200.00,
