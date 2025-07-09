@@ -22,7 +22,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: React.ReactNode;
+  children: React.ReactNode | React.ReactElement;
   variant?: Variant;
   size?: Size;
   asChild?: boolean;
@@ -65,10 +65,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     if (asChild && React.isValidElement(children)) {
-      return React.cloneElement(children, {
+      const child = children as React.ReactElement;
+      return React.cloneElement(child, {
         ...props,
-        ref,
-        className: [classes, children.props.className].filter(Boolean).join(" "),
+        className: [classes, child.props.className].filter(Boolean).join(" "),
+        // ⚠️ No pasamos `ref` aquí porque TypeScript lo restringe
       });
     }
 
