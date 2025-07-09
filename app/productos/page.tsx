@@ -3,17 +3,30 @@
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { products } from '@/data/product';
-import { useCart } from '@/context/CartContext';
 import ProductCard from '../components/ProductCard';
 import ProductDetailModal from '../components/ProductDetailModal';
+
+// Import the Product type from the ProductCard component
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  brand?: string;
+  model?: string;
+  prices?: {
+    minorista?: number;
+    mayorista?: number;
+    "mayorista-48"?: number;
+  };
+};
 
 export default function ProductosPage() {
   const searchParams = useSearchParams();
   const categoria = searchParams.get('categoria');
 
-  const { addToCart } = useCart();
-  const [addedId, setAddedId] = useState<string | null>(null);
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [filteredProducts, setFilteredProducts] = useState(products);
 
   useEffect(() => {
@@ -28,12 +41,6 @@ export default function ProductosPage() {
     }
   }, [categoria]);
 
-  const handleAddToCart = (product: any) => {
-    addToCart(product);
-    setAddedId(product.id);
-    setTimeout(() => setAddedId(null), 1200);
-  };
-
   return (
     <div className="max-w-6xl mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6 capitalize">
@@ -47,8 +54,6 @@ export default function ProductosPage() {
             <ProductCard
               key={product.id}
               product={product}
-              onAddToCart={handleAddToCart}
-              added={addedId === product.id}
               onShowDetails={() => setSelectedProduct(product)}
             />
           ))
