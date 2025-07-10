@@ -4,7 +4,7 @@ import React from "react";
 import type { LucideIcon } from "lucide-react";
 
 type Variant = "primary" | "secondary" | "outline";
-type Size = "sm" | "md" | "lg";
+type Size = "sm" | "md" | "lg" | "icon";
 
 const variantClasses: Record<Variant, string> = {
   primary:
@@ -19,6 +19,7 @@ const sizeClasses: Record<Size, string> = {
   sm: "px-3 py-1.5 text-sm rounded-full",
   md: "px-5 py-2 text-base rounded-full",
   lg: "px-6 py-3 text-lg rounded-full",
+  icon: "p-2 rounded-full",
 };
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {

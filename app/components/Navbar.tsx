@@ -10,8 +10,8 @@ import { useCart } from '@/context/CartContext';
 import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const { getTotalItems } = useCart();
 
   const handleLinkClick = () => {
