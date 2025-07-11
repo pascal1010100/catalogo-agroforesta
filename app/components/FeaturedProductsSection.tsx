@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -10,11 +10,15 @@ import "swiper/css/pagination";
 
 import ProductCard from "./ProductCard";
 import { products } from "./data/product";
+import type { Product } from "./data/product";
+import ProductDetailModal from "./ProductDetailModal";
 
 export default function FeaturedProductsSection() {
   const featuredProducts = products
     .filter((p) => p.category === "Fertilizantes")
     .slice(0, 5);
+
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const prevRef = useRef(null);
   const nextRef = useRef(null);
@@ -34,7 +38,7 @@ export default function FeaturedProductsSection() {
           slidesPerView={1}
           autoplay={{ delay: 3000, disableOnInteraction: false }}
           modules={[Autoplay, Navigation, Pagination]}
-          loop={true}
+          loop
           navigation={{
             prevEl: prevRef.current,
             nextEl: nextRef.current,
@@ -46,7 +50,10 @@ export default function FeaturedProductsSection() {
             1024: { slidesPerView: 3 },
           }}
           onBeforeInit={(swiper) => {
-            if (swiper.params.navigation && typeof swiper.params.navigation === 'object') {
+            if (
+              swiper.params.navigation &&
+              typeof swiper.params.navigation === "object"
+            ) {
               swiper.params.navigation.prevEl = prevRef.current;
               swiper.params.navigation.nextEl = nextRef.current;
             }
@@ -54,47 +61,44 @@ export default function FeaturedProductsSection() {
         >
           {featuredProducts.map((product) => (
             <SwiperSlide key={product.id}>
-              <ProductCard product={product} onShowDetails={() => {}} />
+              <ProductCard
+                product={product}
+                onShowDetails={() => setSelectedProduct(product)}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
 
-        {/* Botones personalizados con color que cambia en modo oscuro */}
+        {/* Botones navegación */}
         <button
           ref={prevRef}
           className="absolute top-1/2 left-0 z-10 -translate-y-1/2 p-2 bg-white dark:bg-gray-900 rounded-full shadow-md hover:bg-green-600 hover:text-white transition
-                     text-gray-800 dark:text-green-500"
+                   text-gray-800 dark:text-green-500"
           aria-label="Anterior"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
+
         <button
           ref={nextRef}
           className="absolute top-1/2 right-0 z-10 -translate-y-1/2 p-2 bg-white dark:bg-gray-900 rounded-full shadow-md hover:bg-green-600 hover:text-white transition
-                     text-gray-800 dark:text-green-500"
+                   text-gray-800 dark:text-green-500"
           aria-label="Siguiente"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </div>
+
+      {/* Modal con detalles del producto */}
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={!!selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </section>
   );
 }
