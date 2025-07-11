@@ -7,7 +7,7 @@ import ThemeToggle from './ThemeToggle';
 import CartIcon from './CartIcon';
 import CartModal from './CartModal';
 import { useCart } from '@/context/CartContext';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Facebook, Instagram, Phone } from 'lucide-react';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function Navbar() {
             <span className="font-bold text-green-850 dark:text-white text-lg">Agroforesta</span>
           </div>
 
-          {/* Contenedor derecho: links + toggle + carrito + hamburguesa */}
+          {/* Contenedor derecho */}
           <div className="flex items-center gap-6 ml-auto">
             {/* Menú horizontal para md+ */}
             <div className="hidden md:flex items-center gap-6">
@@ -62,7 +62,7 @@ export default function Navbar() {
 
             <ThemeToggle />
 
-            {/* Botón del carrito */}
+            {/* Carrito */}
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
@@ -77,7 +77,7 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Botón menú hamburguesa para móvil */}
+            {/* Hamburguesa */}
             <button
               type="button"
               className="md:hidden focus:outline-none text-green-700 dark:text-green-200 hover:text-green-900 dark:hover:text-green-400"
@@ -89,41 +89,73 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-
-        {/* Menú desplegable móvil dentro del nav */}
-        <div
-          className={`md:hidden bg-white dark:bg-green-900/95 shadow-md px-6 py-4 space-y-4 transition-all duration-300 overflow-hidden ${
-            isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
-          }`}
-          role="menu"
-          aria-label="Menú de navegación móvil"
-        >
-          <Link
-            href="/"
-            className="block font-medium text-green-700 dark:text-green-200 hover:text-green-900 dark:hover:text-green-400"
-            onClick={handleLinkClick}
-            role="menuitem"
-          >
-            Inicio
-          </Link>
-          <Link
-            href="/productos"
-            className="block font-medium text-green-700 dark:text-green-200 hover:text-green-900 dark:hover:text-green-400"
-            onClick={handleLinkClick}
-            role="menuitem"
-          >
-            Productos
-          </Link>
-          <a
-            href="#contacto"
-            onClick={scrollToContacto}
-            className="block font-medium text-green-700 dark:text-green-200 hover:text-green-900 dark:hover:text-green-400 cursor-pointer"
-            role="menuitem"
-          >
-            Contacto
-          </a>
-        </div>
       </nav>
+
+      {/* Drawer hamburguesa */}
+      {isMenuOpen && (
+        <>
+          {/* Fondo oscuro */}
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+            onClick={() => setIsMenuOpen(false)}
+          />
+
+          {/* Menú lateral */}
+          <div className="fixed top-0 right-0 h-full w-72 bg-white/90 dark:bg-green-900/95 backdrop-blur-md z-50 shadow-xl p-6 flex flex-col gap-6">
+            {/* Encabezado */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Image src="/logo.png" alt="Agroforesta" width={40} height={40} />
+                <span className="font-bold text-green-800 dark:text-white text-lg">Agroforesta</span>
+              </div>
+              <button onClick={() => setIsMenuOpen(false)} className="text-green-800 dark:text-green-100">
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Navegación */}
+            <nav className="flex flex-col gap-4 mt-4">
+              <Link
+                href="/"
+                onClick={handleLinkClick}
+                className="hover:underline text-green-800 dark:text-green-200"
+              >
+                Inicio
+              </Link>
+              <Link
+                href="/productos"
+                onClick={handleLinkClick}
+                className="hover:underline text-green-800 dark:text-green-200"
+              >
+                Productos
+              </Link>
+              <a
+                href="#contacto"
+                onClick={scrollToContacto}
+                className="hover:underline text-green-800 dark:text-green-200"
+              >
+                Contacto
+              </a>
+            </nav>
+
+            {/* Redes sociales */}
+            <div className="mt-auto border-t border-green-300 dark:border-green-700 pt-4">
+              <span className="text-sm font-medium text-green-700 dark:text-green-200 mb-2 block">Síguenos:</span>
+              <div className="flex gap-4">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                  <Facebook className="w-5 h-5 text-green-800 dark:text-green-100 hover:text-blue-600 transition" />
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                  <Instagram className="w-5 h-5 text-green-800 dark:text-green-100 hover:text-pink-500 transition" />
+                </a>
+                <a href="https://wa.me/50212345678" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                  <Phone className="w-5 h-5 text-green-800 dark:text-green-100 hover:text-green-500 transition" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Modal del carrito */}
       <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
