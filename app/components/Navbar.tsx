@@ -10,16 +10,10 @@ import { SearchBar } from './SearchBar';
 import { useCart } from '@/context/CartContext';
 import { Menu, X, Facebook, Instagram, Phone } from 'lucide-react';
 
-interface Product {
-  id: string;
-  name: string;
-}
 
-interface NavbarProps {
-  products: Product[];
-}
+// Removed unused NavbarProps interface and products prop
 
-export default function Navbar({ products }: NavbarProps) {
+export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { getTotalItems } = useCart();
@@ -76,7 +70,7 @@ export default function Navbar({ products }: NavbarProps) {
             <ThemeToggle />
 
             {/* SearchBar */}
-            <SearchBar products={products} />
+            <SearchBar />
 
             {/* Carrito */}
             <button

@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
 
 // Update the import path below if your product data file is in a different location or has a different name
-import { products } from '../../../../data/products';
-// If the file is named 'products.ts' or 'products.js', use the correct filename
+// Update the import path below if your product data file is in a different location or has a different name
 // import { products } from '../../../../data/products';
+
+// Example: If your products file is named 'products.ts' and is in 'src/data', update as follows:
+import { products } from '../../../data/products';
+
+// If the file is named differently or in another folder, adjust the path accordingly.
 
 
 
