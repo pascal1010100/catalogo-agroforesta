@@ -7,8 +7,8 @@ import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
 
 import "./globals.css";
+import { products } from "@/data/products";
 
-// Configuración de fuentes de Google
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -19,7 +19,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Metadatos de la aplicación
 export const metadata: Metadata = {
   title: "Agroforesta",
   description: "Tienda online de productos de jardinería y agroforesta",  
@@ -37,7 +36,7 @@ export default function RootLayout({
       <body className="antialiased bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CartProvider>
-            <Navbar />  
+            <Navbar products={products} />  {/* Pasa los productos aquí */}
             <main className="flex-1">{children}</main>
             <Footer />  
             <Toaster

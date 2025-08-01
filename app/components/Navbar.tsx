@@ -6,10 +6,20 @@ import Link from 'next/link';
 import ThemeToggle from './ThemeToggle';
 import CartIcon from './CartIcon';
 import CartModal from './CartModal';
+import { SearchBar } from './SearchBar';
 import { useCart } from '@/context/CartContext';
 import { Menu, X, Facebook, Instagram, Phone } from 'lucide-react';
 
-export default function Navbar() {
+interface Product {
+  id: string;
+  name: string;
+}
+
+interface NavbarProps {
+  products: Product[];
+}
+
+export default function Navbar({ products }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { getTotalItems } = useCart();
@@ -48,7 +58,10 @@ export default function Navbar() {
               <Link href="/" className="hover:underline font-medium">
                 Inicio
               </Link>
-              <Link href="/productos" className="hover:underline font-medium">
+              <Link
+                href="/productos"
+                className="hover:underline font-medium text-green-900 dark:text-yellow-200"
+              >
                 Productos
               </Link>
               <a
@@ -61,6 +74,9 @@ export default function Navbar() {
             </div>
 
             <ThemeToggle />
+
+            {/* SearchBar */}
+            <SearchBar products={products} />
 
             {/* Carrito */}
             <button
@@ -94,15 +110,12 @@ export default function Navbar() {
       {/* Drawer hamburguesa */}
       {isMenuOpen && (
         <>
-          {/* Fondo oscuro */}
           <div
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
             onClick={() => setIsMenuOpen(false)}
           />
 
-          {/* Menú lateral */}
           <div className="fixed top-0 right-0 h-full w-72 bg-white/90 dark:bg-green-900/95 backdrop-blur-md z-50 shadow-xl p-6 flex flex-col gap-6">
-            {/* Encabezado */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Image src="/logo.png" alt="Agroforesta" width={40} height={40} />
@@ -113,7 +126,6 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Navegación */}
             <nav className="flex flex-col gap-4 mt-4">
               <Link
                 href="/"
@@ -125,7 +137,7 @@ export default function Navbar() {
               <Link
                 href="/productos"
                 onClick={handleLinkClick}
-                className="hover:underline text-green-800 dark:text-green-200"
+                className="hover:underline font-medium text-green-900 dark:text-yellow-200"
               >
                 Productos
               </Link>
@@ -138,7 +150,6 @@ export default function Navbar() {
               </a>
             </nav>
 
-            {/* Redes sociales */}
             <div className="mt-auto border-t border-green-300 dark:border-green-700 pt-4">
               <span className="text-sm font-medium text-green-700 dark:text-green-200 mb-2 block">Síguenos:</span>
               <div className="flex gap-4">
@@ -157,7 +168,6 @@ export default function Navbar() {
         </>
       )}
 
-      {/* Modal del carrito */}
       <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
