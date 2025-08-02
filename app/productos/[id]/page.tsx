@@ -1,11 +1,7 @@
 import { notFound } from "next/navigation";
 import { products } from '@/data/products';
 
-export default async function ProductDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function ProductDetailPage({ params }: any) {
   const product = products.find((p) => p.id === params.id);
 
   if (!product) {
