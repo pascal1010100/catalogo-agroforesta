@@ -18,10 +18,9 @@ import { products } from '@/data/products';
 
 
 interface ProductPageProps {
-  params: {
-    id: string;
-  };
+  params: { id: string }; 
 }
+
 
 export default async function ProductDetailPage({ params }: ProductPageProps) {
 
