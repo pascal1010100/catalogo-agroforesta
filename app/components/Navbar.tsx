@@ -7,11 +7,14 @@ import ThemeToggle from './ThemeToggle';
 import CartIcon from './CartIcon';
 import CartModal from './CartModal';
 import { useCart } from '@/context/CartContext';
-import { Menu, X, Facebook, Instagram, Phone } from 'lucide-react';
+import { Menu, X, Facebook, Instagram, Phone, Search } from 'lucide-react';
+import SearchBar from './SearchBar';
+import SearchDrawer from './SearchDrawer';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { getTotalItems } = useCart();
 
   const handleLinkClick = () => {
@@ -34,16 +37,31 @@ export default function Navbar() {
         role="navigation"
         aria-label="Barra de navegación principal"
       >
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center justify-between px-6 py-4 relative">
           {/* Logo y título */}
           <div className="flex items-center gap-2">
             <Image src="/logo.png" alt="Agroforesta" width={82} height={62} priority />
             <span className="font-bold text-green-850 dark:text-white text-lg">Agroforesta</span>
           </div>
 
+          {/* SearchBar centrado (solo visible en md+) */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:block w-1/3">
+            <SearchBar />
+          </div>
+
           {/* Contenedor derecho */}
-          <div className="flex items-center gap-6 ml-auto">
-            {/* Menú horizontal para md+ */}
+          <div className="flex items-center gap-4 ml-auto">
+            {/* Ícono de búsqueda para mobile */}
+            <div className="md:hidden">
+              <button
+                aria-label="Buscar productos"
+                onClick={() => setIsSearchOpen(true)}
+              >
+                <Search className="w-5 h-5 text-green-700 dark:text-green-200 hover:text-green-900 dark:hover:text-green-400" />
+              </button>
+            </div>
+
+            {/* Menú horizontal md+ */}
             <div className="hidden md:flex items-center gap-6">
               <Link href="/" className="hover:underline font-medium">
                 Inicio
@@ -94,15 +112,11 @@ export default function Navbar() {
       {/* Drawer hamburguesa */}
       {isMenuOpen && (
         <>
-          {/* Fondo oscuro */}
           <div
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
             onClick={() => setIsMenuOpen(false)}
           />
-
-          {/* Menú lateral */}
           <div className="fixed top-0 right-0 h-full w-72 bg-white/90 dark:bg-green-900/95 backdrop-blur-md z-50 shadow-xl p-6 flex flex-col gap-6">
-            {/* Encabezado */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Image src="/logo.png" alt="Agroforesta" width={40} height={40} />
@@ -156,6 +170,9 @@ export default function Navbar() {
           </div>
         </>
       )}
+
+      {/* Drawer de búsqueda para mobile */}
+      <SearchDrawer isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Modal del carrito */}
       <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
