@@ -23,7 +23,8 @@ interface ProductPageProps {
   };
 }
 
-export default function ProductDetailPage({ params }: ProductPageProps) {
+export default async function ProductDetailPage({ params }: ProductPageProps) {
+
   // Buscar el producto por id en la lista de productos
   interface Product {
     id: string;
