@@ -1,45 +1,13 @@
 import { notFound } from "next/navigation";
-
-// Update the import path below if your product data file is in a different location or has a different name
-// Update the import path below if your product data file is in a different location or has a different name
-// import { products } from '../../../../data/products';
-
-// Example: If your products file is named 'products.ts' and is in 'src/data', update as follows:
-// Update the import path below to the correct location of your products data file
-// Example: import { products } from '@/data/products';
-// Make sure the file exists at the specified path and exports 'products'
 import { products } from '@/data/products';
 
-// If the file is named differently or in another folder, adjust the path accordingly.
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const product = products.find((p) => p.id === params.id);
 
-
-
-
-
-
-interface ProductPageProps {
-  params: { id: string }; 
-}
-
-
-export default async function ProductDetailPage({ params }: ProductPageProps) {
-
-  // Buscar el producto por id en la lista de productos
-  interface Product {
-    id: string;
-    name: string;
-    image: string;
-    description: string;
-    price: number;
-    unidad: string;
-    category: string;
-    brand: string;
-    // Agrega más campos si existen en tu modelo de producto
-  }
-
-  const product: Product | undefined = products.find((p: Product) => p.id === params.id);
-
-  // Si no existe, mostrar página 404
   if (!product) {
     notFound();
   }
@@ -56,7 +24,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       <p className="font-semibold text-green-700 dark:text-green-300">
         Precio: Q{product.price.toFixed(2)} por {product.unidad}
       </p>
-      {/* Puedes agregar más detalles aquí, como categoría, marca, etc. */}
       <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
         Categoría: {product.category}
       </p>
