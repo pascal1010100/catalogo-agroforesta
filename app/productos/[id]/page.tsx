@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 import { products } from '@/data/products';
 
-export default async function ProductDetailPage({ params }: any) {
+type ProductDetailPageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const product = products.find((p) => p.id === params.id);
 
   if (!product) {
@@ -29,3 +35,6 @@ export default async function ProductDetailPage({ params }: any) {
     </main>
   );
 }
+
+// Sample product data for development
+// (removed duplicate products declaration)
