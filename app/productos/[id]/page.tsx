@@ -2,14 +2,13 @@ import { notFound } from "next/navigation";
 import { products } from "@/data/products";
 
 export default async function ProductDetailPage(
-  { params }: { params: { id: string } | Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> } // ← tipa como Promise para cumplir la constraint
 ) {
-  // Next 15: si params ya es objeto, Promise.resolve lo devuelve tal cual;
-  // si es Promise, lo espera. Seguro en ambos casos.
-  const { id } = await Promise.resolve(params);
+  // 'await' funciona si llega Promise o si llega objeto (JS lo devuelve tal cual)
+  const { id } = await params;
 
-  // Normaliza tipos para evitar comparaciones string vs number
-  const product = products.find((p) => String(p.id) === String(id));
+  // normaliza para evitar warning string vs number
+  const product = products.find(p => String(p.id) === String(id));
 
   if (!product) notFound();
 
