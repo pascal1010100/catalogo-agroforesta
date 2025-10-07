@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import CarouselHero from "./CarouselHero";
 import { Button } from "./ui/button";
-import { ChevronRight, ArrowDown } from "lucide-react";
+import { ChevronRight, ArrowDown, MessageSquare } from "lucide-react";
+import ContactForm from './ContactForm';
 
 import type { Variants } from 'framer-motion';
 
@@ -31,6 +33,19 @@ const item: Variants = {
 };
 
 export default function HeaderHero() {
+  const [isContactOpen, setIsContactOpen] = useState(false);
+
+  const openContactForm = () => {
+    setIsContactOpen(true);
+    // Deshabilitar el scroll del body cuando el modal está abierto
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeContactForm = () => {
+    setIsContactOpen(false);
+    // Restaurar el scroll del body
+    document.body.style.overflow = 'auto';
+  };
   return (
     <header className="relative flex items-center justify-center h-[90vh] min-h-[600px] overflow-hidden">
       {/* Fondo con overlay */}
@@ -96,16 +111,16 @@ export default function HeaderHero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <a
-                href="#contacto"
-                className="relative flex items-center gap-2 px-8 py-5 text-lg font-medium transition-all duration-300 border-2 border-white/20 rounded-xl group-hover:border-accent/50 group-hover:bg-accent/5 backdrop-blur-sm"
+              <button
+                onClick={openContactForm}
+                className="relative w-full flex items-center justify-center gap-2 px-8 py-5 text-lg font-medium transition-all duration-300 border-2 border-white/20 rounded-xl group-hover:border-accent/50 group-hover:bg-accent/5 backdrop-blur-sm"
               >
                 <span className="relative z-10 flex items-center text-white">
+                  <MessageSquare className="mr-2 w-5 h-5" />
                   Contactar asesor
-                  <ChevronRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5" />
                 </span>
                 <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-accent/0 via-accent/5 to-accent/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </a>
+              </button>
             </motion.div>
           </motion.div>
         </motion.div>
@@ -122,6 +137,9 @@ export default function HeaderHero() {
           <ArrowDown className="w-6 h-6" />
         </a>
       </motion.div>
+      
+      {/* Modal de contacto */}
+      <ContactForm isOpen={isContactOpen} onClose={closeContactForm} />
     </header>
   );
 }
