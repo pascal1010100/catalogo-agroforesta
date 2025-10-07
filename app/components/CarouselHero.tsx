@@ -1,32 +1,44 @@
 'use client';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Autoplay, EffectFade } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 import Image from 'next/image';
 
-export default function CarouselHero() {
-  const slides = [
-    { id: 1, img: "/images/hero1.jpg" },
-    { id: 2, img: "/images/hero2.jpg" },
-    { id: 3, img: "/images/hero3.jpg" },
-  ];
+const slides = [
+  { 
+    id: 1, 
+    img: "/images/hero1.jpg",
+    title: "Tecnología agrícola de vanguardia",
+    description: "Soluciones innovadoras para maximizar tu producción"
+  },
+  { 
+    id: 2, 
+    img: "/images/hero2.jpg",
+    title: "Productos de calidad superior",
+    description: "Los mejores insumos para tus cultivos"
+  },
+  { 
+    id: 3, 
+    img: "/images/hero3.jpg",
+    title: "Sostenibilidad y rendimiento",
+    description: "Cultiva de manera responsable y eficiente"
+  },
+];
 
+export default function CarouselHero() {
   return (
     <div className="absolute inset-0 w-full h-full">
       <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
-        navigation={{
-          prevEl: '.custom-prev',
-          nextEl: '.custom-next',
+        modules={[Autoplay, EffectFade]}
+        effect="fade"
+        speed={1000}
+        autoplay={{ 
+          delay: 5000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true
         }}
-        pagination={{ 
-          el: '.custom-pagination',
-          clickable: true 
-        }}
-        autoplay={{ delay: 3000 }}
         loop
         className="w-full h-full"
       >
@@ -35,28 +47,19 @@ export default function CarouselHero() {
             <div className="w-full h-full relative">
               <Image
                 src={slide.img}
-                alt={`Slide ${slide.id}`}
+                alt={slide.title}
                 fill
                 className="object-cover object-center"
                 priority={slide.id === 1}
+                sizes="100vw"
+                quality={100}
               />
+              {/* Overlay de gradiente */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
-
-      {/* Botones de navegación */}
-      <div className="absolute inset-0 flex items-center justify-between z-30">
-        <button className="custom-prev">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        <button className="custom-next">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-      </div>
-
-      {/* Puntos de paginación */}
-      <div className="custom-pagination absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-30"></div>
     </div>
   );
 }

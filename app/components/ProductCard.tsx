@@ -6,21 +6,8 @@ import { useCart } from "@/context/CartContext";
 import { useState } from "react";
 import { Tag, Info } from "lucide-react"; // Importamos iconos para mejorar la UI
 
-// Definición del tipo Product actualizada
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-  brand?: string;
-  model?: string;
-  prices?: {
-    minorista?: number;
-    mayorista?: number;
-    "mayorista-48"?: number;
-  };
-};
+// Importamos el tipo Product desde data/products para mantener consistencia
+import type { Product } from "@/data/products";
 
 interface ProductCardProps {
   product: Product;
@@ -66,7 +53,7 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
       {/* Imagen con efecto hover */}
       <div className="relative w-full h-48 overflow-hidden">
         <Image
-          src={product.image}
+          src={product.image || '/images/placeholder.jpg'}
           alt={product.name}
           width={320}
           height={160}
@@ -75,6 +62,9 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
           }`}
           sizes="(max-width: 768px) 100vw, 33vw"
           priority={false}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
+          }}
         />
       </div>
 
