@@ -64,15 +64,17 @@ export default function CategoryGrid() {
           href={cat.href}
           className="group rounded-xl overflow-hidden shadow-md bg-white dark:bg-gray-800 transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col"
         >
-          <div className="relative w-full h-24">
-            <Image
-              src={cat.image}
-              alt={cat.name}
-              fill
-              className="object-contain group-hover:opacity-90 transition"
-              sizes="(max-width: 768px) 100vw, 33vw"
-              priority
-            />
+          <div className="relative w-full h-48 overflow-hidden">
+            <div className="relative w-full h-full">
+              <Image
+                src={cat.image}
+                alt={cat.name}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 768px) 100vw, 33vw"
+                priority
+              />
+            </div>
           </div>
           <div className="p-4 flex-1 flex flex-col items-center text-center">
             <cat.Icon className="w-8 h-8 mb-2 text-green-700 group-hover:text-green-900 transition" />
