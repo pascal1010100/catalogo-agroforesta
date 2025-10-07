@@ -11,6 +11,17 @@ type Props = {
   query?: string;       // ⬅️ texto de búsqueda (opcional, por si quieres mostrarlo)
 };
 
+// Mapeo de nombres de categoría a sus colores correspondientes
+const CATEGORY_COLORS: Record<string, string> = {
+  'Fertilizantes': 'bg-gradient-to-r from-green-500/90 to-green-700/90 text-white',
+  'Maquinaria': 'bg-gradient-to-r from-blue-500/90 to-blue-700/90 text-white',
+  'Herramientas': 'bg-gradient-to-r from-amber-500/90 to-amber-700/90 text-white',
+  'Semillas': 'bg-gradient-to-r from-lime-500/90 to-lime-700/90 text-white',
+  'Protección de Cultivos': 'bg-gradient-to-r from-violet-600 to-violet-700/90 text-white',
+  'Insumos Agrícolas': 'bg-gradient-to-r from-amber-500/90 to-amber-700/90 text-white',
+  'Sistemas de Riego': 'bg-gradient-to-r from-cyan-500/90 to-cyan-700/90 text-white'
+};
+
 // Usamos las categorías definidas en CATEGORIES para asegurar que todas se muestren
 const categoryOrder = Object.values(CATEGORIES);
 
@@ -130,9 +141,16 @@ export default function ProductosCliente({ products, query }: Props) {
           .filter((cat) => groupedProducts[cat])
           .map((cat) => (
             <div key={cat} className="mb-12">
-              <h2 className="text-xl font-semibold mb-4 capitalize text-green-800 dark:text-green-200">
-                {cat}
-              </h2>
+              <div className="mb-6">
+                <div className={`inline-flex items-center px-4 py-2 rounded-lg ${CATEGORY_COLORS[cat] || 'bg-gray-100 text-gray-800'}`}>
+                  <h2 className="text-xl font-bold capitalize">
+                    {cat}
+                  </h2>
+                  <span className="ml-3 text-sm bg-white/20 px-2 py-0.5 rounded-full">
+                    {groupedProducts[cat].length} {groupedProducts[cat].length === 1 ? 'producto' : 'productos'}
+                  </span>
+                </div>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {groupedProducts[cat].map((product) => (
                   <ProductCard

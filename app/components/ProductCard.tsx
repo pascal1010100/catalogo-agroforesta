@@ -32,7 +32,7 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
 
   return (
     <div
-      className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full"
+      className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-100 dark:border-gray-700 hover:border-green-200 dark:hover:border-green-800"
       tabIndex={0}
       aria-label={`Tarjeta de producto: ${product.name}`}
       onMouseEnter={() => setIsHovering(true)}
@@ -51,48 +51,53 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
       )}
 
       {/* Imagen con efecto hover */}
-      <div className="relative w-full h-48 overflow-hidden">
-        <Image
-          src={product.image || '/images/placeholder.jpg'}
-          alt={product.name}
-          width={320}
-          height={160}
-          className={`w-full h-40 object-contain p-2 transition-transform duration-300 ${
-            isHovering ? 'scale-110' : 'scale-100'
-          }`}
-          sizes="(max-width: 768px) 100vw, 33vw"
-          priority={false}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
-          }}
-        />
+      <div className="relative w-full h-48 bg-white dark:bg-gray-900 overflow-hidden">
+        <div className="relative w-full h-full flex items-center justify-center p-4">
+          <Image
+            src={product.image || '/images/placeholder.jpg'}
+            alt={product.name}
+            width={280}
+            height={180}
+            className={`max-h-full max-w-full object-contain transition-transform duration-300 ${
+              isHovering ? 'scale-105' : 'scale-100'
+            }`}
+            sizes="(max-width: 768px) 100vw, 33vw"
+            priority={false}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
+            }}
+          />
+        </div>
       </div>
 
-      <div className="flex-1 p-4 flex flex-col">
-        <h3 className="font-semibold text-lg text-green-900 dark:text-green-100">
+      <div className="flex-1 p-5 flex flex-col">
+        <h3 className="font-bold text-lg text-green-900 dark:text-green-100 mb-1 line-clamp-1">
           {product.name}
         </h3>
         
-        <p className="text-green-800 dark:text-green-200 text-sm mb-2 flex-1 line-clamp-2">
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 flex-1 line-clamp-2 min-h-[2.8rem]">
           {product.description}
         </p>
         
         {/* Precios */}
-        <div className="mt-auto">
+        <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700">
           {/* Precio principal */}
-          <div className="flex items-center justify-between mt-2">
-            <span
-              className="font-bold text-green-700 dark:text-green-300 text-lg"
-              aria-label={`Precio: ${formatPrice(product.price)}`}
-            >
-              {formatPrice(product.price)}
-            </span>
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-xs text-gray-500 dark:text-gray-400 block">Precio:</span>
+              <span
+                className="font-bold text-green-600 dark:text-green-400 text-xl"
+                aria-label={`Precio: ${formatPrice(product.price)}`}
+              >
+                {formatPrice(product.price)}
+              </span>
+            </div>
             
             {/* Indicador de precios alternativos */}
             {product.prices && Object.keys(product.prices).length > 0 && (
-              <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                <Info size={12} className="mr-1" />
-                Precios mayoristas disponibles
+              <div className="text-xs bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-300 px-2 py-1 rounded-full flex items-center">
+                <Info size={12} className="mr-1 flex-shrink-0" />
+                <span className="truncate">Precios especiales</span>
               </div>
             )}
           </div>
