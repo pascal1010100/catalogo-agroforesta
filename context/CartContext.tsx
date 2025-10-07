@@ -1,7 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import toast from 'react-hot-toast'; // Importa react-hot-toast
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 
 // Tipos de producto y carrito
 export interface Product {
@@ -26,6 +25,7 @@ interface CartContextType {
   getTotalPrice: () => number;
   getTotalItems: () => number;
   isLoaded: boolean;
+  lastAddedItem: { id: string; timestamp: number } | null;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -33,6 +33,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [lastAddedItem, setLastAddedItem] = useState<{ id: string; timestamp: number } | null>(null);
 
   // Cargar carrito desde localStorage al montar
   useEffect(() => {
@@ -61,26 +62,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [cart, isLoaded]);
 
-  // Agregar producto al carrito (con validación y toast)
-  const addToCart = (product: Product) => {
+  // Agregar producto al carrito
+  const addToCart = useCallback((product: Product) => {
     if (!product.id || typeof product.price !== 'number') {
       console.error('Producto inválido:', product);
       return;
     }
+    
+    setLastAddedItem({ id: product.id, timestamp: Date.now() });
+    
     setCart(prevCart => {
       const existing = prevCart.find(item => item.id === product.id);
       if (existing) {
-        toast.success('Cantidad aumentada en el carrito');
         return prevCart.map(item =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
-      toast.success('Producto agregado al carrito');
       return [...prevCart, { ...product, quantity: 1 }];
     });
-  };
+  }, []);
 
   // Eliminar producto del carrito
   const removeFromCart = (productId: string) => {
@@ -125,6 +127,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         getTotalPrice,
         getTotalItems,
         isLoaded,
+        lastAddedItem,
       }}
     >
       {children}

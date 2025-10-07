@@ -1,47 +1,145 @@
+'use client';
+
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import CarouselHero from "./CarouselHero";
 import { Button } from "./ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ArrowDown, MessageSquare } from "lucide-react";
+import ContactForm from './ContactForm';
+
+import type { Variants } from 'framer-motion';
+
+const container: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const item: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  show: { 
+    y: 0, 
+    opacity: 1, 
+    transition: { 
+      duration: 0.6, 
+      ease: [0.16, 1, 0.3, 1] 
+    } 
+  },
+};
 
 export default function HeaderHero() {
+  const [isContactOpen, setIsContactOpen] = useState(false);
+
+  const openContactForm = () => {
+    setIsContactOpen(true);
+    // Deshabilitar el scroll del body cuando el modal está abierto
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeContactForm = () => {
+    setIsContactOpen(false);
+    // Restaurar el scroll del body
+    document.body.style.overflow = 'auto';
+  };
   return (
-    <header className="relative flex flex-col items-center justify-center h-[420px] md:h-[550px] overflow-hidden bg-gradient-to-br from-green-100 via-green-200 to-green-300 dark:from-green-900 dark:via-green-800 dark:to-green-700 px-4 md:px-16">
+    <header className="relative flex items-center justify-center h-[90vh] min-h-[600px] overflow-hidden">
+      {/* Fondo con overlay */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/30 to-black/60" />
+      
+      {/* Carrusel de fondo */}
       <CarouselHero />
       
-      {/* Contenido con mejor estilo */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-40">
-        <div className="bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-2xl p-8 shadow-xl max-w-2xl w-full mx-auto">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-green-900 dark:text-white drop-shadow-lg tracking-tight">
-            Catálogo Agroforesta
-          </h1>
-          <p className="mt-6 text-lg md:text-xl text-green-800 dark:text-green-100 max-w-xl mx-auto leading-relaxed">
-            Productos y soluciones para agricultura, jardinería y el futuro Sustentable.
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              asChild
-              size="lg"
-              variant="primary"
-              className="shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+      {/* Contenido principal */}
+      <div className="relative z-20 w-full max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
+        <motion.div 
+          className="text-center max-w-4xl mx-auto"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.h1 
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-tight"
+            variants={item}
+          >
+            Soluciones agrícolas de <span className="text-accent">alto rendimiento</span>
+          </motion.h1>
+          
+          <motion.p 
+            className="text-lg md:text-xl text-gray-100 mb-10 max-w-2xl mx-auto leading-relaxed"
+            variants={item}
+          >
+            Maquinaria y productos químicos para potenciar tu producción con tecnología de vanguardia y sostenibilidad.
+          </motion.p>
+          
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-6 justify-center mt-8"
+            variants={item}
+          >
+            {/* Botón principal */}
+            <motion.div
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <a href="#productos" className="flex items-center">
-                Ver productos
-                <ChevronRight className="ml-2 w-5 h-5" />
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-accent/60 to-green-600/60 opacity-70 blur transition-all duration-300 group-hover:opacity-100 group-hover:blur-sm" />
+              <a
+                href="#productos"
+                className="relative flex items-center gap-2 px-8 py-5 text-lg font-semibold text-white transition-all duration-300 bg-gradient-to-br from-accent to-green-600 rounded-xl shadow-2xl group-hover:shadow-accent/30 group-hover:shadow-xl"
+              >
+                <span className="relative z-10 flex items-center">
+                  Explorar productos
+                  <ChevronRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5" />
+                </span>
+                <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </a>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-2 hover:bg-green-100/20 dark:hover:bg-green-800/30 hover:scale-105 transition-all duration-300"
+            </motion.div>
+
+            {/* Botón secundario */}
+            <motion.div
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <a href="#contacto" className="flex items-center">
-                Contáctanos
-                <ChevronRight className="ml-2 w-5 h-5" />
-              </a>
-            </Button>
-          </div>
-        </div>
+              <button
+                onClick={openContactForm}
+                className="relative w-full flex items-center justify-center gap-2 px-8 py-5 text-lg font-medium transition-all duration-300 border-2 border-white/20 rounded-xl group-hover:border-accent/50 group-hover:bg-accent/5 backdrop-blur-sm"
+              >
+                <span className="relative z-10 flex items-center text-white">
+                  <MessageSquare className="mr-2 w-5 h-5" />
+                  Contactar asesor
+                </span>
+                <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-accent/0 via-accent/5 to-accent/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </button>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
+      
+      {/* Flecha de desplazamiento */}
+      <motion.div 
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+        animate={{ y: [0, 10, 0] }}
+        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+      >
+        <a href="#categorias" className="flex flex-col items-center text-white/80 hover:text-accent transition-colors">
+          <span className="text-sm mb-1">Desplazar</span>
+          <ArrowDown className="w-6 h-6" />
+        </a>
+      </motion.div>
+      
+      {/* Modal de contacto */}
+      <ContactForm isOpen={isContactOpen} onClose={closeContactForm} />
     </header>
   );
 }

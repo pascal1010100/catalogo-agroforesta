@@ -14,8 +14,11 @@ export default function HomePage() {
         <CategorySection />
         <FeaturedProductsSection />
       </section>
-      <section id="contacto">
+      <section id="aboutsection">
         <AboutSection />
+      </section>
+      <section id="contacto">
+        {/* Aquí iría el componente de contacto cuando lo crees */}
       </section>
     </main>
   );
