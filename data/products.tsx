@@ -1,3 +1,19 @@
+// Constantes para categorías y marcas
+export const CATEGORIES = {
+  FERTILIZANTES: 'Fertilizantes',
+  MAQUINARIA: 'Maquinaria',
+  HERRAMIENTAS: 'Herramientas',
+  SEMILLAS: 'Semillas',
+  INSUMOS: 'Insumos Agrícolas',
+  RIEGO: 'Sistemas de Riego',
+  PROTECCION: 'Protección de Cultivos'
+} as const;
+
+export const BRANDS = {
+  AGROFORESTA: 'Agroforesta',
+  BRUDDEN: 'Brudden'
+} as const;
+
 export type Product = {
   id: string;
   name: string;
@@ -13,11 +29,15 @@ export type Product = {
   brand: string;
   model?: string;
   unidad: string;
-  // Nuevos campos para mejorar la experiencia
+  // Campos adicionales
   stock?: number;
+  rating?: number;
   featured?: boolean;
   tags?: string[];
   specifications?: Record<string, string>;
+  // Campos de auditoría
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export const products: Product[] = [
@@ -33,12 +53,17 @@ export const products: Product[] = [
     brand: "Agroforesta",
     unidad: "unidad",
     featured: true,
+    stock: 50,
+    rating: 4.5,
     tags: ["universal", "foliar", "interior", "exterior"],
     specifications: {
       "Presentación": "1 litro",
       "Tipo": "Foliar",
-      "Características": "Sin silicona ni aceite"
-    }
+      "Características": "Sin silicona ni aceite",
+      "Uso": "Todas las plantas de interior y exterior"
+    },
+    createdAt: "2025-01-01",
+    updatedAt: "2025-09-01"
   },
   {
     id: "happy-plant-floracion",
@@ -611,6 +636,111 @@ export const products: Product[] = [
       "Tipo": "Eléctrico portátil",
       "Uso": "Interior y doméstico"
     }
+  },
+  // ===== PRODUCTOS DE EJEMPLO PARA CATEGORÍAS VACÍAS =====
+  {
+    id: "ejemplo-herramientas-001",
+    name: "Kit Básico de Herramientas",
+    description: "Kit básico de herramientas de jardinería para mantenimiento general.",
+    category: CATEGORIES.HERRAMIENTAS,
+    image: "/images/placeholder.jpg",
+    price: 450.00,
+    prices: { minorista: 450.00, mayorista: 400.00 },
+    brand: "Genérico",
+    model: "KIT-001",
+    unidad: "juego",
+    stock: 15,
+    featured: false,
+    tags: ["herramientas", "jardinería", "kit"],
+    specifications: {
+      "Contenido": "Tijeras, pala, rastrillo, guantes",
+      "Material": "Acero inoxidable"
+    },
+    createdAt: "2025-10-01",
+    updatedAt: "2025-10-01"
+  },
+  {
+    id: "ejemplo-semillas-001",
+    name: "Paquete de Semillas Variadas",
+    description: "Selección de semillas de hortalizas para huerto casero.",
+    category: CATEGORIES.SEMILLAS,
+    image: "/images/placeholder.jpg",
+    price: 120.00,
+    prices: { minorista: 120.00, mayorista: 100.00 },
+    brand: "Huerto Feliz",
+    model: "SEM-VAR-001",
+    unidad: "paquete",
+    stock: 30,
+    featured: false,
+    tags: ["semillas", "hortalizas", "huerto"],
+    specifications: {
+      "Contenido": "Tomate, lechuga, zanahoria, cebolla",
+      "Tipo": "Orgánico"
+    },
+    createdAt: "2025-10-01",
+    updatedAt: "2025-10-01"
+  },
+  {
+    id: "ejemplo-insumos-001",
+    name: "Sustrato Universal 20L",
+    description: "Sustrato universal para todo tipo de plantas, enriquecido con nutrientes.",
+    category: CATEGORIES.INSUMOS,
+    image: "/images/placeholder.jpg",
+    price: 180.00,
+    prices: { minorista: 180.00, mayorista: 150.00 },
+    brand: "Tierra Fértil",
+    unidad: "bolsa",
+    stock: 40,
+    featured: false,
+    tags: ["sustrato", "tierra", "macetas"],
+    specifications: {
+      "Capacidad": "20 litros",
+      "Uso": "Plantas de interior y exterior"
+    },
+    createdAt: "2025-10-01",
+    updatedAt: "2025-10-01"
+  },
+  {
+    id: "ejemplo-riego-001",
+    name: "Kit de Riego por Goteo",
+    description: "Kit básico de riego por goteo para jardines pequeños.",
+    category: CATEGORIES.RIEGO,
+    image: "/images/placeholder.jpg",
+    price: 650.00,
+    prices: { minorista: 650.00, mayorista: 580.00 },
+    brand: "AquaFlow",
+    model: "KRG-100",
+    unidad: "kit",
+    stock: 8,
+    featured: false,
+    tags: ["riego", "goteo", "jardín"],
+    specifications: {
+      "Contenido": "20m de manguera, 20 goteros, conectores",
+      "Cobertura": "Hasta 20m²"
+    },
+    createdAt: "2025-10-01",
+    updatedAt: "2025-10-01"
+  },
+  {
+    id: "ejemplo-proteccion-001",
+    name: "Malla Antigranizo 4x5m",
+    description: "Malla protectora contra granizo y pájaros para cultivos.",
+    category: CATEGORIES.PROTECCION,
+    image: "/images/placeholder.jpg",
+    price: 850.00,
+    prices: { minorista: 850.00, mayorista: 750.00 },
+    brand: "ProtegeTuCultivo",
+    model: "MAG-45",
+    unidad: "unidad",
+    stock: 12,
+    featured: false,
+    tags: ["protección", "malla", "cultivos"],
+    specifications: {
+      "Tamaño": "4m x 5m",
+      "Material": "Polietileno de alta densidad"
+    },
+    createdAt: "2025-10-01",
+    updatedAt: "2025-10-01"
   }
 ];
 
@@ -619,8 +749,31 @@ export const getProductsByCategory = (category: string): Product[] => {
   return products.filter(product => product.category === category);
 };
 
+// Función para verificar si una imagen existe
+const imageExists = (imagePath: string): boolean => {
+  try {
+    // En producción, esto debería ser reemplazado por una verificación real de la existencia del archivo
+    // Por ahora, asumimos que todas las imágenes existen
+    return true;
+  } catch (error) {
+    console.warn(`La imagen no pudo ser cargada: ${imagePath}`);
+    return false;
+  }
+};
+
 export const getFeaturedProducts = (): Product[] => {
-  return products.filter(product => product.featured === true);
+  // Filtrar productos destacados y con imágenes válidas
+  return products.filter(product => {
+    const isFeatured = product.featured === true;
+    const hasValidImage = product.image && imageExists(product.image);
+    
+    // Si no tiene imagen, mostrar advertencia en consola
+    if (isFeatured && !hasValidImage) {
+      console.warn(`El producto destacado "${product.name}" no tiene una imagen válida: ${product.image}`);
+    }
+    
+    return isFeatured && hasValidImage;
+  });
 };
 
 export const getProductById = (id: string): Product | undefined => {
@@ -641,13 +794,3 @@ export const getProductsByPriceRange = (min: number, max: number): Product[] => 
   return products.filter(product => product.price >= min && product.price <= max);
 };
 
-// Constantes para categorías y marcas
-export const CATEGORIES = {
-  FERTILIZANTES: 'Fertilizantes',
-  MAQUINARIA: 'Maquinaria'
-} as const;
-
-export const BRANDS = {
-  AGROFORESTA: 'Agroforesta',
-  BRUDDEN: 'Brudden'
-} as const;

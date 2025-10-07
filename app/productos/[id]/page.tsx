@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { products } from "@/data/products";
+import { products, getProductById } from "@/data/products";
 
 export default async function ProductDetailPage(
   { params }: { params: Promise<{ id: string }> } // ← tipa como Promise para cumplir la constraint
@@ -7,8 +7,8 @@ export default async function ProductDetailPage(
   // 'await' funciona si llega Promise o si llega objeto (JS lo devuelve tal cual)
   const { id } = await params;
 
-  // normaliza para evitar warning string vs number
-  const product = products.find(p => String(p.id) === String(id));
+  // Usamos la función getProductById para obtener el producto
+  const product = getProductById(id);
 
   if (!product) notFound();
 

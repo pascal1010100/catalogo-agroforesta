@@ -1,104 +1,214 @@
-"use client";
+'use client';
 
-import { useState, useRef } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/autoplay";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { Swiper as SwiperType } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
-import ProductCard from "./ProductCard";
-import { products } from "./data/product";
-import type { Product } from "./data/product";
-import ProductDetailModal from "./ProductDetailModal";
+// Componentes
+import ProductCard from './ProductCard';
+import ProductDetailModal from './ProductDetailModal';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+
+// Importar datos reales de productos y tipos
+import { getFeaturedProducts, type Product } from '@/data/products';
+
+// Obtener productos destacados
+const featuredProducts = getFeaturedProducts();
 
 export default function FeaturedProductsSection() {
-  const featuredProducts = products
-    .filter((p) => p.category === "Fertilizantes")
-    .slice(0, 5);
-
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+  const [isSwiperReady, setIsSwiperReady] = useState(false);
+  const swiperRef = useRef<SwiperType | null>(null);
+  const navigationPrevRef = useRef<HTMLButtonElement>(null);
+  const navigationNextRef = useRef<HTMLButtonElement>(null);
+  const paginationEl = useRef<HTMLDivElement>(null);
 
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  // Usar los productos destacados
+  const [products, setProducts] = useState<Product[]>([]);
+  
+  // Cargar productos destacados al montar el componente
+  useEffect(() => {
+    setProducts(featuredProducts);
+  }, [featuredProducts]);
+
+  // Maneja el cambio de slide
+  const handleSlideChange = useCallback((swiper: SwiperType) => {
+    setIsBeginning(swiper.isBeginning);
+    setIsEnd(swiper.isEnd);
+  }, []);
+
+  // Inicializa el swiper
+  const onSwiperInit = useCallback((swiper: SwiperType) => {
+    swiperRef.current = swiper;
+    handleSlideChange(swiper);
+    setIsSwiperReady(true);
+  }, [handleSlideChange]);
+
+  // Actualiza la navegación cuando los elementos están listos
+  useEffect(() => {
+    if (isSwiperReady && swiperRef.current) {
+      swiperRef.current.update();
+    }
+  }, [isSwiperReady, featuredProducts]);
+
+  // Configuración de navegación
+  const navigation = {
+    prevEl: navigationPrevRef.current,
+    nextEl: navigationNextRef.current,
+  };
 
   return (
-    <section className="max-w-6xl mx-auto py-16 px-4">
-      <h2 className="text-2xl md:text-3xl font-bold text-green-900 dark:text-green-100 mb-4">
-        Productos Destacados
-      </h2>
-      <p className="text-green-800 dark:text-green-200 mb-8 max-w-2xl">
-        Descubre algunos de nuestros productos más populares y recomendados para impulsar tu proyecto agroforestal.
-      </p>
-
-      <div className="relative">
-        <Swiper
-          spaceBetween={20}
-          slidesPerView={1}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          modules={[Autoplay, Navigation, Pagination]}
-          loop
-          navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
-          }}
-          pagination={{ clickable: true }}
-          speed={600}
-          breakpoints={{
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
-          onBeforeInit={(swiper) => {
-            if (
-              swiper.params.navigation &&
-              typeof swiper.params.navigation === "object"
-            ) {
-              swiper.params.navigation.prevEl = prevRef.current;
-              swiper.params.navigation.nextEl = nextRef.current;
-            }
-          }}
+    <section 
+      className="py-16 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+      aria-label="Productos destacados"
+    >
+      <div className="container mx-auto px-4">
+        {/* Encabezado */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '0px 0px -50px 0px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          {featuredProducts.map((product) => (
-            <SwiperSlide key={product.id}>
-              <ProductCard
-                product={product}
-                onShowDetails={() => setSelectedProduct(product)}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200 text-sm font-medium mb-4">
+            <Star className="w-4 h-4 mr-2 fill-current" aria-hidden="true" />
+            <span>Productos Destacados</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Nuestros <span className="text-green-600 dark:text-green-400">Productos</span> Destacados
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-emerald-500 mx-auto mb-6 rounded-full" aria-hidden="true" />
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Descubre los productos más populares y mejor valorados
+          </p>
+        </motion.div>
 
-        {/* Botones navegación */}
-        <button
-          ref={prevRef}
-          className="absolute top-1/2 left-0 z-10 -translate-y-1/2 p-2 bg-white dark:bg-gray-900 rounded-full shadow-md hover:bg-green-600 hover:text-white transition
-                   text-gray-800 dark:text-green-500"
-          aria-label="Anterior"
-        >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
+        {/* Carrusel */}
+        <div className="relative">
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={24}
+            slidesPerView={1}
+            onSwiper={onSwiperInit}
+            onSlideChange={handleSlideChange}
+            navigation={isSwiperReady ? navigation : false}
+            pagination={{
+              clickable: true,
+              el: paginationEl.current || undefined,
+              bulletClass: 'w-2 h-2 inline-block rounded-full bg-gray-300 mx-1 cursor-pointer transition-all duration-300',
+              bulletActiveClass: 'w-6 bg-green-500',
+              renderBullet: (index, className) => {
+                return `<span class="${className}" role="button" tabindex="0" aria-label="Ir al producto ${index + 1}"></span>`;
+              }
+            }}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true
+            }}
+            breakpoints={{
+              640: { 
+                slidesPerView: 1.2,
+                centeredSlides: true 
+              },
+              768: { 
+                slidesPerView: 2,
+                centeredSlides: false 
+              },
+              1024: { 
+                slidesPerView: 3 
+              },
+              1280: { 
+                slidesPerView: 3.5 
+              }
+            }}
+            className="pb-16"
+            a11y={{
+              prevSlideMessage: 'Producto anterior',
+              nextSlideMessage: 'Siguiente producto',
+              paginationBulletMessage: 'Ir al producto {{index}}',
+            }}
+            loop={true}
+            loopAdditionalSlides={1}
+            watchSlidesProgress={true}
+            updateOnWindowResize={true}
+            observer={true}
+            observeParents={true}
+          >
+            {products.map((product) => (
+              <SwiperSlide 
+                key={product.id} 
+                className="pb-12"
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${product.name} - ${product.description.substring(0, 50)}...`}
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '0px 0px -100px 0px' }}
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-full"
+                >
+                  <ProductCard 
+                    product={product}
+                    onShowDetails={() => setSelectedProduct(product)}
+                  />
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-        <button
-          ref={nextRef}
-          className="absolute top-1/2 right-0 z-10 -translate-y-1/2 p-2 bg-white dark:bg-gray-900 rounded-full shadow-md hover:bg-green-600 hover:text-white transition
-                   text-gray-800 dark:text-green-500"
-          aria-label="Siguiente"
-        >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+          {/* Controles de navegación */}
+          <div className="flex items-center justify-center mt-8 space-x-4">
+            <button
+              ref={navigationPrevRef}
+              className={`p-3 rounded-full shadow-md transition-all duration-300 ${
+                isBeginning ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:bg-green-100 dark:hover:bg-gray-700 hover:scale-110'
+              } bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200`}
+              aria-label="Producto anterior"
+              disabled={isBeginning}
+              aria-disabled={isBeginning}
+            >
+              <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+            </button>
+            <div 
+              ref={paginationEl} 
+              className="swiper-pagination flex items-center justify-center space-x-2" 
+              aria-label="Navegación del carrusel"
+            />
+            <button
+              ref={navigationNextRef}
+              className={`p-3 rounded-full shadow-md transition-all duration-300 ${
+                isEnd ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:bg-green-100 dark:hover:bg-gray-700 hover:scale-110'
+              } bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200`}
+              aria-label="Siguiente producto"
+              disabled={isEnd}
+              aria-disabled={isEnd}
+            >
+              <ChevronRight className="w-5 h-5" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Modal con detalles del producto */}
-      <ProductDetailModal
-        product={selectedProduct}
-        isOpen={!!selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-      />
+      {/* Modal de detalles */}
+      {selectedProduct && (
+        <ProductDetailModal
+          isOpen={!!selectedProduct}
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </section>
   );
 }
