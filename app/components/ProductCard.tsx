@@ -32,11 +32,14 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
 
   return (
     <div
-      className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full border border-gray-100 dark:border-gray-700 hover:border-green-200 dark:hover:border-green-800"
+      className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full border-2 border-gray-100 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transform hover:-translate-y-1 hover:scale-[1.02] will-change-transform"
       tabIndex={0}
       aria-label={`Tarjeta de producto: ${product.name}`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      style={{
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
+      }}
     >
       {/* Badge para marca/modelo si existe */}
       {(product.brand || product.model) && (
@@ -51,16 +54,20 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
       )}
 
       {/* Imagen con efecto hover */}
-      <div className="relative w-full h-48 bg-white dark:bg-gray-900 overflow-hidden">
-        <div className="relative w-full h-full flex items-center justify-center p-4">
+      <div className="relative w-full h-48 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+        <div className="relative w-full h-full flex items-center justify-center p-4 group-hover:bg-opacity-95 transition-all duration-300">
           <Image
             src={product.image || '/images/placeholder.jpg'}
             alt={product.name}
             width={280}
             height={180}
-            className={`max-h-full max-w-full object-contain transition-transform duration-300 ${
-              isHovering ? 'scale-105' : 'scale-100'
+            className={`max-h-full max-w-full object-contain transition-all duration-500 ease-in-out ${
+              isHovering ? 'scale-110' : 'scale-100'
             }`}
+            style={{
+              filter: isHovering ? 'drop-shadow(0 10px 8px rgba(0, 0, 0, 0.1))' : 'none',
+              transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease',
+            }}
             sizes="(max-width: 768px) 100vw, 33vw"
             priority={false}
             onError={(e) => {
@@ -68,6 +75,8 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
             }}
           />
         </div>
+        {/* Efecto de resplandor en hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-green-50/80 to-transparent dark:from-green-900/20 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
 
       <div className="flex-1 p-5 flex flex-col">

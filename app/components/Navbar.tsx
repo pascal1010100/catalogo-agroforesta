@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ShoppingCart, Search, Menu, X, Sun, Moon } from 'lucide-react';
@@ -16,9 +16,21 @@ export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { getTotalItems } = useCart();
+  const { getTotalItems, lastAddedItem } = useCart();
   const cartItemsCount = getTotalItems();
   const { theme, setTheme } = useTheme();
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Trigger animation when an item is added to cart
+  useEffect(() => {
+    if (lastAddedItem) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 800); // Match this with the CSS animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [lastAddedItem]);
 
   const navLinks = [
     { name: 'Inicio', href: '/' },
@@ -124,7 +136,14 @@ export default function Navbar() {
                 >
                   <ShoppingCart className="h-5 w-5" />
                   {cartItemsCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-green-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ring-2 ring-white dark:ring-gray-900">
+                    <span 
+                      className={`absolute -top-1 -right-1 bg-green-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ring-2 ring-white dark:ring-gray-900 transition-all duration-300 ${
+                        isAnimating ? 'animate-ping-once' : ''
+                      }`}
+                      style={{
+                        transform: isAnimating ? 'scale(1.5)' : 'scale(1)',
+                      }}
+                    >
                       {cartItemsCount}
                     </span>
                   )}
