@@ -67,17 +67,25 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       console.error('Producto inválido:', product);
       return;
     }
+    
     setCart(prevCart => {
       const existing = prevCart.find(item => item.id === product.id);
       if (existing) {
-        toast.success('Cantidad aumentada en el carrito');
-        return prevCart.map(item =>
+        const newCart = prevCart.map(item =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
+        // Show toast after state update is complete
+        setTimeout(() => {
+          toast.success('Cantidad aumentada en el carrito');
+        }, 0);
+        return newCart;
       }
-      toast.success('Producto agregado al carrito');
+      // Show toast after state update is complete
+      setTimeout(() => {
+        toast.success('Producto agregado al carrito');
+      }, 0);
       return [...prevCart, { ...product, quantity: 1 }];
     });
   };
