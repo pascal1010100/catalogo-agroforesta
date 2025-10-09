@@ -4,7 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 
-export default function SearchBar() {
+interface SearchBarProps {
+  onSearchComplete?: () => void;
+}
+
+export default function SearchBar({ onSearchComplete }: SearchBarProps = {}) {
   const [query, setQuery] = useState('');
   const router = useRouter();
 
@@ -12,6 +16,7 @@ export default function SearchBar() {
     e.preventDefault();
     if (query.trim()) {
       router.push(`/productos?search=${encodeURIComponent(query.trim())}`);
+      onSearchComplete?.();
     }
   };
 
