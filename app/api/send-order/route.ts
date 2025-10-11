@@ -58,3 +58,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: errorMessage }, { status: 500 });
   }
 }
+
+//10 octubre 2025
