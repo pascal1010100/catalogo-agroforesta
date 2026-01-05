@@ -20,6 +20,11 @@ export default function Navbar() {
   const cartItemsCount = getTotalItems();
   const { theme, setTheme } = useTheme();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Trigger animation when an item is added to cart
   useEffect(() => {
@@ -94,11 +99,10 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`px-3 py-2 text-sm font-medium rounded-md ${
-                      pathname === link.href.split('#')[0]
-                        ? 'text-accent bg-accent/10 dark:bg-accent/20'
-                        : 'text-foreground/80 hover:bg-accent/10 dark:hover:bg-accent/20'
-                    }`}
+                    className={`px-3 py-2 text-sm font-medium rounded-md ${pathname === link.href.split('#')[0]
+                      ? 'text-accent bg-accent/10 dark:bg-accent/20'
+                      : 'text-foreground/80 hover:bg-accent/10 dark:hover:bg-accent/20'
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -106,7 +110,7 @@ export default function Navbar() {
               </div>
 
               {/* Botón de búsqueda en móvil */}
-              <button 
+              <button
                 onClick={toggleSearch}
                 className="md:hidden p-2 text-foreground/80 hover:text-accent rounded-full hover:bg-accent/10 dark:hover:bg-accent/20"
                 aria-label="Buscar"
@@ -115,12 +119,14 @@ export default function Navbar() {
               </button>
 
               {/* Botón de tema */}
-              <button 
+              <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 className="p-2 text-foreground/80 hover:text-accent rounded-full hover:bg-accent/10 dark:hover:bg-accent/20"
                 aria-label="Cambiar tema"
               >
-                {theme === 'dark' ? (
+                {!mounted ? (
+                  <div className="h-5 w-5" /> // Placeholder to prevent layout shift
+                ) : theme === 'dark' ? (
                   <Sun className="h-5 w-5" />
                 ) : (
                   <Moon className="h-5 w-5" />
@@ -129,17 +135,16 @@ export default function Navbar() {
 
               {/* Carrito */}
               <div className="relative">
-                <button 
+                <button
                   onClick={handleCartClick}
                   className="p-2 text-foreground/80 hover:text-accent rounded-full hover:bg-accent/10 dark:hover:bg-accent/20"
                   aria-label="Carrito de compras"
                 >
                   <ShoppingCart className="h-5 w-5" />
                   {cartItemsCount > 0 && (
-                    <span 
-                      className={`absolute -top-1 -right-1 bg-green-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ring-2 ring-white dark:ring-gray-900 transition-all duration-300 ${
-                        isAnimating ? 'animate-ping-once' : ''
-                      }`}
+                    <span
+                      className={`absolute -top-1 -right-1 bg-green-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ring-2 ring-white dark:ring-gray-900 transition-all duration-300 ${isAnimating ? 'animate-ping-once' : ''
+                        }`}
                       style={{
                         transform: isAnimating ? 'scale(1.5)' : 'scale(1)',
                       }}
@@ -151,7 +156,7 @@ export default function Navbar() {
               </div>
 
               {/* Menú móvil */}
-              <button 
+              <button
                 className="md:hidden p-2 text-foreground/80 hover:text-accent rounded-full hover:bg-accent/10 dark:hover:bg-accent/20"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label="Menú"
@@ -174,11 +179,10 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`block px-3 py-2 text-base font-medium ${
-                    pathname === link.href.split('#')[0]
-                      ? 'bg-accent/20 text-accent dark:bg-accent/30'
-                      : 'text-foreground/80 hover:bg-accent/10 dark:hover:bg-accent/20 hover:text-foreground'
-                  }`}
+                  className={`block px-3 py-2 text-base font-medium ${pathname === link.href.split('#')[0]
+                    ? 'bg-accent/20 text-accent dark:bg-accent/30'
+                    : 'text-foreground/80 hover:bg-accent/10 dark:hover:bg-accent/20 hover:text-foreground'
+                    }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.name}
@@ -190,15 +194,15 @@ export default function Navbar() {
       </nav>
 
       {/* Modal de búsqueda */}
-      <SearchModal 
-        isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
       />
 
       {/* Modal del carrito */}
-      <CartModal 
-        isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
+      <CartModal
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
       />
     </>
   );

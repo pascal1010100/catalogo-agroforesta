@@ -1,13 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { z } from "zod";
 
 // Usa el API key de tu archivo .env.local
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_123');
+
+const orderSchema = z.object({
+  usuario: z.object({
+    nombre: z.string().min(2, "Nombre requerido"),
+    email: z.string().email("Email inválido"),
+    telefono: z.string().min(8, "Teléfono inválido"),
+    direccion: z.string().min(5, "Dirección requerida"),
+  }),
+  productos: z.array(z.object({
+    name: z.string(),
+    quantity: z.number().min(1),
+    price: z.number().min(0),
+  })).min(1, "El pedido debe tener al menos un producto"),
+  total: z.number().min(0),
+});
 
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-    const { usuario, productos, total } = data;
+
+    // Validación Zod
+    const result = orderSchema.safeParse(data);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { ok: false, error: 'Datos de pedido inválidos', details: result.error.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
+
+    const { usuario, productos, total } = result.data;
 
     // Construye el cuerpo del correo en HTML
     const html = `
@@ -22,19 +49,19 @@ export async function POST(req: NextRequest) {
       <h3>Productos</h3>
       <ul>
         ${productos
-          .map(
-            (p: { name: string; quantity: number; price: number }) =>
-              `<li>${p.name} (x${p.quantity}) - Q${p.price.toFixed(2)}</li>`
-          )
-          .join("")}
+        .map(
+          (p) =>
+            `<li>${p.name} (x${p.quantity}) - Q${p.price.toFixed(2)}</li>`
+        )
+        .join("")}
       </ul>
       <p><b>Total:</b> Q${total.toFixed(2)}</p>
     `;
 
     // ENVÍA EL CORREO
     const { data: emailData, error } = await resend.emails.send({
-      from: "onboarding@resend.dev", // Usa este remitente para pruebas
-      to: "josemanu0885@gmail.com",  // Cambia aquí el correo destinatario
+      from: process.env.SENDER_EMAIL || "onboarding@resend.dev",
+      to: process.env.ADMIN_EMAIL || "josemanu0885@gmail.com",
       subject: "Nuevo pedido desde Agroforesta",
       html,
     });
