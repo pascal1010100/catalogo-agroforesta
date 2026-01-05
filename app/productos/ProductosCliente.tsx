@@ -31,19 +31,11 @@ export default function ProductosCliente({ products, query }: Props) {
 
   // base: si llega lista filtrada desde la página, úsala; si no, usa todas
   const baseList = products ?? allProducts;
-  
-  // Log para depuración
-  console.log('=== DEPURACIÓN DE PRODUCTOS ===');
-  console.log('Productos cargados:', baseList);
-  console.log('Categorías únicas:', [...new Set(baseList.map(p => p.category))]);
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [groupedProducts, setGroupedProducts] = useState<Record<string, Product[]>>({});
 
   useEffect(() => {
-    console.log('=== INICIO EFECTO ===');
-    console.log('Parámetro de categoría de la URL:', categoria);
-    
     // Mapeo de categorías de URL a categorías de productos
     const categoryMapping: Record<string, string> = {
       // Mapeo de URLs a nombres de categoría (insensible a mayúsculas/minúsculas)
@@ -65,65 +57,37 @@ export default function ProductosCliente({ products, query }: Props) {
     };
 
     // Normalizar la categoría de la URL (insensible a mayúsculas/minúsculas)
-    const categoriaNormalizada = categoria 
-      ? categoryMapping[categoria.toLowerCase()] || 
-        Object.values(CATEGORIES).find(cat => 
-          cat.toLowerCase() === categoria.toLowerCase()
-        ) || categoria
+    const categoriaNormalizada = categoria
+      ? categoryMapping[categoria.toLowerCase()] ||
+      Object.values(CATEGORIES).find(cat =>
+        cat.toLowerCase() === categoria.toLowerCase()
+      ) || categoria
       : null;
-      
-    console.log('Categoría de la URL:', categoria);
-    console.log('Categoría normalizada:', categoriaNormalizada);
 
     // Filtrar productos por categoría (insensible a mayúsculas/minúsculas)
     const filteredByCategory = categoriaNormalizada
-      ? baseList.filter((product) => {
-          const match = product.category.toLowerCase() === categoriaNormalizada.toLowerCase();
-          if (!match) {
-            console.log(`Producto no coincide con categoría ${categoriaNormalizada}:`, 
-              `${product.name} (${product.category})`);
-            return false;
-          }
-          console.log(`Producto COINCIDE con categoría ${categoriaNormalizada}:`, 
-            `${product.name} (${product.category})`);
-          return true;
-        })
+      ? baseList.filter((product) => product.category.toLowerCase() === categoriaNormalizada.toLowerCase())
       : baseList;
-      
-    console.log('Categoría solicitada:', categoria);
-    console.log('Categoría normalizada:', categoriaNormalizada);
-    console.log('Total de productos en la categoría:', filteredByCategory.length);
-    console.log('Productos encontrados:', filteredByCategory.map(p => `${p.name} (${p.category})`).join(', '));
-      
-    console.log('Total de productos encontrados en', categoriaNormalizada || 'todas las categorías', ':', filteredByCategory.length);
-    console.log('Productos encontrados:', filteredByCategory);
-      
-    console.log('Productos después de filtrar:', filteredByCategory);
 
     // Agrupar productos por categoría (insensible a mayúsculas/minúsculas)
     const grouped: Record<string, Product[]> = {};
-    
+
     // Primero, crear un mapeo de categorías en minúsculas a su versión canónica
     const categoryMap = new Map<string, string>();
     Object.values(CATEGORIES).forEach(cat => {
       categoryMap.set(cat.toLowerCase(), cat);
     });
-    
+
     // Agrupar los productos usando las categorías canónicas
     filteredByCategory.forEach((product) => {
       const catLower = product.category.toLowerCase();
       const canonicalCat = categoryMap.get(catLower) || product.category; // Usar la categoría canónica si existe
-      
+
       if (!grouped[canonicalCat]) {
         grouped[canonicalCat] = [];
       }
       grouped[canonicalCat].push(product);
     });
-
-    console.log('Categoría seleccionada:', categoria);
-    console.log('Categoría normalizada:', categoriaNormalizada);
-    console.log('Productos filtrados:', filteredByCategory);
-    console.log('Productos agrupados:', grouped);
 
     setGroupedProducts(grouped);
   }, [categoria, baseList]);

@@ -1,25 +1,38 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { z } from 'zod';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_123');
+
+// Esquema de validación
+const contactSchema = z.object({
+  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  email: z.string().email("Email inválido"),
+  phone: z.string().optional().or(z.literal('')),
+  subject: z.string().min(1, "El asunto es requerido"),
+  message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres"),
+});
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone, subject, message } = body;
 
-    // Validación básica
-    if (!name || !email || !message) {
+    // Validación con Zod
+    const result = contactSchema.safeParse(body);
+
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Faltan campos requeridos' },
+        { error: 'Datos inválidos', details: result.error.flatten().fieldErrors },
         { status: 400 }
       );
     }
 
+    const { name, email, phone, subject, message } = result.data;
+
     // Enviar correo al administrador
     const adminEmail = await resend.emails.send({
-      from: 'Agroforesta <contacto@tudominio.com>', // Reemplaza con tu dominio verificado en Resend
-      to: 'tu-email@ejemplo.com', // Reemplaza con el email del administrador
+      from: process.env.SENDER_EMAIL || 'onboarding@resend.dev',
+      to: process.env.ADMIN_EMAIL || 'josemanu0885@gmail.com',
       subject: `Nuevo mensaje de contacto: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -39,7 +52,7 @@ export async function POST(request: Request) {
 
     // Enviar correo de confirmación al usuario
     const confirmationEmail = await resend.emails.send({
-      from: 'Agroforesta <contacto@tudominio.com>', // Reemplaza con tu dominio verificado en Resend
+      from: process.env.SENDER_EMAIL || 'onboarding@resend.dev',
       to: email,
       subject: 'Hemos recibido tu mensaje',
       html: `
@@ -65,7 +78,7 @@ export async function POST(request: Request) {
       `,
     });
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       message: 'Mensaje enviado correctamente',
       data: {

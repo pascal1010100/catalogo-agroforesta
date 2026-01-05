@@ -1,6 +1,7 @@
 'use client';
 
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "./ui/button";
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
@@ -11,10 +12,16 @@ import type { Product } from "@/data/products";
 
 interface ProductCardProps {
   product: Product;
-  onShowDetails: () => void;
+  onShowDetails?: () => void;
 }
 
 export default function ProductCard({ product, onShowDetails }: ProductCardProps) {
+  // ... existing code ...
+  // (We rely on surrounding context matching, but replace specifically the interface and the Button part)
+  // Since replace_file_content needs contiguous block, it's safer to separate.
+  // But wait, the tool requires contiguous edit. I have to edit the Interface AND the Button.
+  // They are far apart. I should use multi_replace_file_content.
+
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
@@ -33,8 +40,6 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
   return (
     <div
       className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full border-2 border-gray-100 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transform hover:-translate-y-1 hover:scale-[1.02] will-change-transform"
-      tabIndex={0}
-      aria-label={`Tarjeta de producto: ${product.name}`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       style={{
@@ -46,7 +51,7 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
         <div className="absolute top-2 left-2 z-10">
           <span className="bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 text-xs px-2 py-1 rounded-full flex items-center">
             <Tag size={12} className="mr-1" />
-            {product.brand && product.model 
+            {product.brand && product.model
               ? `${product.brand} - ${product.model}`
               : product.brand || product.model}
           </span>
@@ -61,9 +66,8 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
             alt={product.name}
             width={280}
             height={180}
-            className={`max-h-full max-w-full object-contain transition-all duration-500 ease-in-out ${
-              isHovering ? 'scale-110' : 'scale-100'
-            }`}
+            className={`max-h-full max-w-full object-contain transition-all duration-500 ease-in-out ${isHovering ? 'scale-110' : 'scale-100'
+              }`}
             style={{
               filter: isHovering ? 'drop-shadow(0 10px 8px rgba(0, 0, 0, 0.1))' : 'none',
               transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease',
@@ -83,11 +87,11 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
         <h3 className="font-bold text-lg text-green-900 dark:text-green-100 mb-1 line-clamp-1">
           {product.name}
         </h3>
-        
+
         <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 flex-1 line-clamp-2 min-h-[2.8rem]">
           {product.description}
         </p>
-        
+
         {/* Precios */}
         <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700">
           {/* Precio principal */}
@@ -101,7 +105,7 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
                 {formatPrice(product.price)}
               </span>
             </div>
-            
+
             {/* Indicador de precios alternativos */}
             {product.prices && Object.keys(product.prices).length > 0 && (
               <div className="text-xs bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-300 px-2 py-1 rounded-full flex items-center">
@@ -110,19 +114,32 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
               </div>
             )}
           </div>
-          
+
           {/* Botones */}
           <div className="flex gap-2 mt-3">
-            <Button
-              size="sm"
-              variant="outline"
-              type="button"
-              onClick={onShowDetails}
-              aria-label={`Ver detalles de ${product.name}`}
-              className="flex-1"
-            >
-              Ver detalles
-            </Button>
+            {onShowDetails ? (
+              <Button
+                size="sm"
+                variant="outline"
+                type="button"
+                onClick={onShowDetails}
+                aria-label={`Ver detalles de ${product.name}`}
+                className="flex-1"
+              >
+                Ver detalles
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                asChild
+                className="flex-1"
+              >
+                <Link href={`/productos/${product.id}`} aria-label={`Ver detalles de ${product.name}`}>
+                  Ver detalles
+                </Link>
+              </Button>
+            )}
             <Button
               size="sm"
               variant="primary"

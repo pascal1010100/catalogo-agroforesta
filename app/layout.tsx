@@ -100,6 +100,7 @@ export default function RootLayout({
           border: '1px solid hsl(var(--border))',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0,0,0,0.07)',
         }}
+        suppressHydrationWarning
       >
         <Providers>
           <CartProvider>
