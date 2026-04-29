@@ -7,12 +7,18 @@ import { createClient } from '@/lib/supabase/server';
 export default async function HomePage() {
   const supabase = await createClient();
   
-  // Fetch featured products for the home page
+  // Fetch featured products for the home page (joining category name)
   const { data: featuredProducts } = await supabase
     .from('products')
-    .select('*')
+    .select('*, categories(name)')
     .eq('featured', true)
     .limit(10);
+
+  // Map the data so components get product.category as a string
+  const mappedProducts = featuredProducts?.map(p => ({
+    ...p,
+    category: p.categories?.name || 'General'
+  })) || [];
 
   return (
     <main>
@@ -21,7 +27,7 @@ export default async function HomePage() {
       </section>
       <section id="productos">
         <CategorySection />
-        <FeaturedProductsSection initialProducts={featuredProducts || []} />
+        <FeaturedProductsSection initialProducts={mappedProducts} />
       </section>
       <section id="aboutsection">
         <AboutSection />

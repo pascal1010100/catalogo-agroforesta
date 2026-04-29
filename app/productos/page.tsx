@@ -12,10 +12,10 @@ export default async function ProductosPage(
   
   const supabase = await createClient();
   
-  // Fetch products from real DB
+  // Fetch products from real DB with category name
   let query = supabase
     .from('products')
-    .select('*')
+    .select('*, categories(name)')
     .order('created_at', { ascending: false });
 
   // Simple search if query exists
@@ -23,11 +23,16 @@ export default async function ProductosPage(
     query = query.ilike('name', `%${q}%`);
   }
 
-  const { data: products, error } = await query;
+  const { data: rawProducts, error } = await query;
 
   if (error) {
     console.error('Error fetching products:', error);
   }
+
+  const products = rawProducts?.map(p => ({
+    ...p,
+    category: p.categories?.name || 'General'
+  })) || [];
 
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Cargando productos...</div>}>

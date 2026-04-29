@@ -14,8 +14,19 @@ import ProductDetailModal from './ProductDetailModal';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-export default function FeaturedProductsSection({ initialProducts = [] }: { initialProducts?: any[] }) {
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  image: string;
+  price: number;
+  featured: boolean;
+  [key: string]: any;
+}
+
+export default function FeaturedProductsSection({ initialProducts = [] }: { initialProducts?: Product[] }) {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const [isSwiperReady, setIsSwiperReady] = useState(false);
@@ -23,12 +34,10 @@ export default function FeaturedProductsSection({ initialProducts = [] }: { init
   const navigationPrevRef = useRef<HTMLButtonElement>(null);
   const navigationNextRef = useRef<HTMLButtonElement>(null);
   const paginationEl = useRef<HTMLDivElement>(null);
-  const [products, setProducts] = useState<any[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   
   useEffect(() => {
-    if (initialProducts.length > 0) {
-      setProducts(initialProducts);
-    }
+    setProducts(initialProducts);
   }, [initialProducts]);
 
   const handleSlideChange = useCallback((swiper: SwiperType) => {
