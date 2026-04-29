@@ -2,15 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 
-// Tipos de producto y carrito
-export interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  description?: string;
-  category?: string;
-}
+import { Product } from '@/types';
 
 interface CartItem extends Product {
   quantity: number;

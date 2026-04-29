@@ -2,7 +2,8 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { products as allProducts, CATEGORIES, type Product } from '@/data/products';
+import { CATEGORIES } from '@/data/products';
+import { Product } from '@/types';
 import ProductCard from '../components/ProductCard';
 import ProductDetailModal from '../components/ProductDetailModal';
 
@@ -29,8 +30,8 @@ export default function ProductosCliente({ products, query }: Props) {
   const searchParams = useSearchParams();
   const categoria = searchParams.get('categoria');
 
-  // base: si llega lista filtrada desde la página, úsala; si no, usa todas
-  const baseList = products ?? allProducts;
+  // base: la lista filtrada viene desde el componente de servidor
+  const baseList = products || [];
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [groupedProducts, setGroupedProducts] = useState<Record<string, Product[]>>({});
@@ -66,7 +67,7 @@ export default function ProductosCliente({ products, query }: Props) {
 
     // Filtrar productos por categoría (insensible a mayúsculas/minúsculas)
     const filteredByCategory = categoriaNormalizada
-      ? baseList.filter((product) => product.category.toLowerCase() === categoriaNormalizada.toLowerCase())
+      ? baseList.filter((product) => (product.category?.toLowerCase() || '') === categoriaNormalizada.toLowerCase())
       : baseList;
 
     // Agrupar productos por categoría (insensible a mayúsculas/minúsculas)
@@ -80,8 +81,8 @@ export default function ProductosCliente({ products, query }: Props) {
 
     // Agrupar los productos usando las categorías canónicas
     filteredByCategory.forEach((product) => {
-      const catLower = product.category.toLowerCase();
-      const canonicalCat = categoryMap.get(catLower) || product.category; // Usar la categoría canónica si existe
+      const catLower = product.category?.toLowerCase() || 'general';
+      const canonicalCat = categoryMap.get(catLower) || product.category || 'General';
 
       if (!grouped[canonicalCat]) {
         grouped[canonicalCat] = [];

@@ -215,7 +215,7 @@ export default function NewProductPage() {
                 )}
               </div>
               <p className="text-[10px] text-muted-foreground text-center italic">
-                * Por ahora las imágenes se manejan por URL. La carga directa estará disponible pronto.
+                * Sube una imagen clara del producto (JPG, PNG). Se guardará automáticamente en el catálogo.
               </p>
             </div>
 

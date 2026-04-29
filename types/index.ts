@@ -1,15 +1,15 @@
 export interface Product {
   id: string;
   name: string;
-  description: string;
-  category: string;
-  image: string;
-  price: number;
-  brand: string;
-  unidad: string;
-  stock?: number;
-  featured?: boolean;
-  model?: string;
+  description?: string | null;
+  category?: string | null;
+  image?: string | null;
+  price?: number | null;
+  brand?: string | null;
+  unidad?: string | null;
+  stock?: number | null;
+  featured?: boolean | null;
+  model?: string | null;
   [key: string]: any;
 }
 

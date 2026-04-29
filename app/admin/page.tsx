@@ -45,9 +45,13 @@ export default async function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat) => (
-          <div key={stat.name} className="bg-card p-6 rounded-2xl border shadow-sm space-y-4">
+          <Link 
+            key={stat.name} 
+            href={stat.name === 'Total Productos' ? '/admin/products' : (stat.name === 'Stock Crítico' ? '/admin/products' : '#')}
+            className="bg-card p-6 rounded-2xl border shadow-sm space-y-4 hover:shadow-md hover:border-primary/50 transition-all group"
+          >
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-xl bg-primary/10 text-primary">
+              <div className="p-2 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                 <stat.icon className="h-5 w-5" />
               </div>
               <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${
@@ -60,7 +64,7 @@ export default async function AdminDashboard() {
               <p className="text-sm font-medium text-muted-foreground">{stat.name}</p>
               <h2 className="text-3xl font-bold mt-1 tracking-tight">{stat.value}</h2>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

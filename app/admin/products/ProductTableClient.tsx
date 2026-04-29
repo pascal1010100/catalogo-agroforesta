@@ -36,8 +36,8 @@ export function ProductTableClient({ initialProducts }: ProductTableClientProps)
   const filteredProducts = useMemo(() => {
     return initialProducts.filter(product => {
       const matchesSearch = 
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (product.brand?.toLowerCase().includes(searchTerm.toLowerCase()));
+        (product.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (product.brand?.toLowerCase() || '').includes(searchTerm.toLowerCase());
       
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
       

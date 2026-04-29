@@ -11,7 +11,7 @@ import 'swiper/css/pagination';
 
 import ProductCard from './ProductCard';
 import ProductDetailModal from './ProductDetailModal';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Package } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Product } from '@/types';
 
@@ -73,33 +73,38 @@ export default function FeaturedProductsSection({ initialProducts = [] }: { init
         {/* Carousel Container */}
         <div className="relative group">
           <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            spaceBetween={32}
-            slidesPerView={1}
             onSwiper={onSwiperInit}
             onSlideChange={handleSlideChange}
-            navigation={isSwiperReady ? navigation : false}
-            pagination={{
-              clickable: true,
-              el: paginationEl.current || undefined,
-              bulletClass: 'h-1.5 w-1.5 rounded-full bg-muted-foreground/30 mx-1 cursor-pointer transition-all',
-              bulletActiveClass: 'w-8 bg-primary',
-            }}
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={30}
+            slidesPerView={1}
             autoplay={{ delay: 5000, disableOnInteraction: false }}
-            breakpoints={{
-              640: { slidesPerView: 1.5, centeredSlides: true },
-              1024: { slidesPerView: 3, centeredSlides: false },
+            pagination={{ 
+              el: paginationEl.current || undefined,
+              clickable: true,
+              bulletClass: 'swiper-pagination-bullet !bg-muted-foreground/30 !w-3 !h-3',
+              bulletActiveClass: '!bg-primary !w-8 !rounded-full transition-all duration-300'
             }}
-            className="!pb-20"
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+            className="pb-16"
           >
-            {products.map((product) => (
-              <SwiperSlide key={product.id}>
-                <ProductCard 
-                  product={product}
-                  onShowDetails={() => setSelectedProduct(product)}
-                />
-              </SwiperSlide>
-            ))}
+            {products && products.length > 0 ? (
+              products.map((product) => (
+                <SwiperSlide key={product.id}>
+                  <ProductCard product={product} onShowDetails={() => setSelectedProduct(product)} />
+                </SwiperSlide>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="h-16 w-16 rounded-full bg-muted/20 flex items-center justify-center text-muted-foreground/20 mb-4">
+                  <Package className="h-8 w-8" />
+                </div>
+                <p className="text-muted-foreground">No hay productos destacados en este momento.</p>
+              </div>
+            )}
           </Swiper>
 
           {/* Navigation Controls */}
