@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import Image from 'next/image';
+import { ProductActions } from './ProductActions';
 
 export default async function AdminProductsPage() {
   const supabase = await createClient();
@@ -124,21 +125,7 @@ export default async function AdminProductsPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Link href={`/productos/${product.id}`} target="_blank">
-                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                      <Link href={`/admin/products/${product.id}/edit`}>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <ProductActions id={product.id} />
                   </td>
                 </tr>
               ))}

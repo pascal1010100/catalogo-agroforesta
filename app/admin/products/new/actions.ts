@@ -55,3 +55,34 @@ export async function deleteProduct(id: string) {
 
   return { success: true };
 }
+export async function updateProduct(id: string, data: any) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from('products')
+    .update({
+      name: data.name,
+      brand: data.brand,
+      category: data.category,
+      description: data.description,
+      price: data.price,
+      unidad: data.unidad,
+      model: data.model,
+      stock: data.stock,
+      featured: data.featured,
+      image: data.image // Only update if provided
+    })
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error updating product:', error);
+    return { error: error.message };
+  }
+
+  revalidatePath('/admin/products');
+  revalidatePath(`/productos/${id}`);
+  revalidatePath('/productos');
+  revalidatePath('/');
+  
+  return { success: true };
+}
