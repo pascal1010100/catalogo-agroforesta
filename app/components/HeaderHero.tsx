@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { ArrowRight } from "lucide-react";
+import Link from 'next/link';
 import CarouselHero from './CarouselHero';
 
 export default function HeaderHero() {
@@ -29,12 +30,16 @@ export default function HeaderHero() {
             Potencia tu producción con tecnología avanzada y soluciones sostenibles diseñadas para el campo moderno.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="rounded-full gap-2 px-8 shadow-lg shadow-primary/20">
-              Explorar Catálogo <ArrowRight className="h-5 w-5" />
-            </Button>
-            <Button size="lg" variant="outline" className="rounded-full px-8 bg-white/10 backdrop-blur-md text-white border-white/20 hover:bg-white/20 transition-all">
-              Contactar Asesor
-            </Button>
+            <Link href="/productos">
+              <Button size="lg" className="rounded-full gap-2 px-8 shadow-lg shadow-primary/20">
+                Explorar Catálogo <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="#contacto">
+              <Button size="lg" variant="outline" className="rounded-full px-8 bg-white/10 backdrop-blur-md text-white border-white/20 hover:bg-white/20 transition-all">
+                Contactar Asesor
+              </Button>
+            </Link>
           </div>
         </motion.div>
       </div>

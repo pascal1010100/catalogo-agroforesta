@@ -1,8 +1,9 @@
 'use client';
 
 import Image from "next/image";
-import { X } from "lucide-react";
-
+import { X, ShoppingCart } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { useState } from "react";
 import { Product } from "@/types";
 
 interface ProductDetailModalProps {
@@ -12,7 +13,19 @@ interface ProductDetailModalProps {
 }
 
 export default function ProductDetailModal({ product, isOpen, onClose }: ProductDetailModalProps) {
+  const { addToCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
+
   if (!isOpen || !product) return null;
+
+  const handleAddToCart = () => {
+    setIsAdding(true);
+    addToCart(product);
+    setTimeout(() => {
+      setIsAdding(false);
+      onClose();
+    }, 800);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" role="dialog" aria-modal="true">
@@ -107,6 +120,14 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                   </div>
                 )}
               </div>
+              <button
+                onClick={handleAddToCart}
+                disabled={isAdding}
+                className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all active:scale-[0.98] disabled:opacity-70"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {isAdding ? "¡Agregado!" : "Añadir al carrito"}
+              </button>
             </div>
           </div>
         </div>
