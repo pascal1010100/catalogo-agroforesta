@@ -46,12 +46,19 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
           {/* Sección de información */}
           <div className="w-full md:w-1/2 p-6 flex flex-col">
             <div className="mb-2">
-              {product.brand && (
-                <span className="inline-block bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded-full mb-2">
-                  {product.brand}
-                </span>
-              )}
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{product.name}</h2>
+              <div className="flex gap-2 mb-2">
+                {product.category && (
+                  <span className="inline-block bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                    {product.category}
+                  </span>
+                )}
+                {product.brand && (
+                  <span className="inline-block bg-muted text-muted-foreground text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                    {product.brand}
+                  </span>
+                )}
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{product.name}</h2>
               {product.model && (
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Modelo: {product.model}

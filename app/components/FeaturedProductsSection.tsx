@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import type { Swiper as SwiperClass } from 'swiper';
+import type SwiperClass from 'swiper';
 
 // Import swiper styles
 import 'swiper/css';
