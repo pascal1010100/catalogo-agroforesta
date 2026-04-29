@@ -2,9 +2,11 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import type { Swiper as SwiperClass } from 'swiper';
+
+// Import swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -30,7 +32,7 @@ export default function FeaturedProductsSection({ initialProducts = [] }: { init
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const [isSwiperReady, setIsSwiperReady] = useState(false);
-  const swiperRef = useRef<SwiperType | null>(null);
+  const swiperRef = useRef<SwiperClass | null>(null);
   const navigationPrevRef = useRef<HTMLButtonElement>(null);
   const navigationNextRef = useRef<HTMLButtonElement>(null);
   const paginationEl = useRef<HTMLDivElement>(null);
@@ -40,12 +42,12 @@ export default function FeaturedProductsSection({ initialProducts = [] }: { init
     setProducts(initialProducts);
   }, [initialProducts]);
 
-  const handleSlideChange = useCallback((swiper: SwiperType) => {
+  const handleSlideChange = useCallback((swiper: SwiperClass) => {
     setIsBeginning(swiper.isBeginning);
     setIsEnd(swiper.isEnd);
   }, []);
 
-  const onSwiperInit = useCallback((swiper: SwiperType) => {
+  const onSwiperInit = useCallback((swiper: SwiperClass) => {
     swiperRef.current = swiper;
     handleSlideChange(swiper);
     setIsSwiperReady(true);
