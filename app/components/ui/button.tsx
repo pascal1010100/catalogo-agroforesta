@@ -2,24 +2,27 @@
 
 import React from "react";
 import type { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-type Variant = "primary" | "secondary" | "outline";
+type Variant = "primary" | "secondary" | "outline" | "ghost" | "link";
 type Size = "sm" | "md" | "lg" | "icon";
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-green-700 text-white hover:bg-green-800 shadow-md",
+    "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20",
   secondary:
-    "bg-white text-green-800 hover:bg-green-100 border border-green-700 shadow",
+    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
   outline:
-    "border border-green-700 text-green-700 hover:bg-green-50 dark:border-green-300 dark:text-green-300 dark:hover:bg-green-900/30",
+    "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+  ghost: "hover:bg-accent hover:text-accent-foreground",
+  link: "text-primary underline-offset-4 hover:underline",
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: "px-3 py-1.5 text-sm rounded-full",
-  md: "px-5 py-2 text-base rounded-full",
-  lg: "px-6 py-3 text-lg rounded-full",
-  icon: "p-2 rounded-full",
+  sm: "h-9 px-3 text-xs rounded-xl",
+  md: "h-11 px-6 text-sm rounded-xl",
+  lg: "h-14 px-8 text-base rounded-2xl",
+  icon: "h-10 w-10 rounded-xl",
 };
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -46,22 +49,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const base =
-      "inline-flex items-center gap-2 font-semibold transition-all duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
-    const classes = [
-      base,
+    const classes = cn(
+      "inline-flex items-center justify-center gap-2 font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95",
       variantClasses[variant],
       sizeClasses[size],
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+      className
+    );
 
     const content = (
       <>
-        {IconLeft && <IconLeft className="w-4 h-4 mr-1" />}
+        {IconLeft && <IconLeft className="w-4 h-4 shrink-0" />}
         {children}
-        {IconRight && <IconRight className="w-4 h-4 ml-1" />}
+        {IconRight && <IconRight className="w-4 h-4 shrink-0" />}
       </>
     );
 
@@ -69,8 +68,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       const child = children as React.ReactElement;
       return React.cloneElement(child, {
         ...props,
-        className: [classes, child.props.className].filter(Boolean).join(" "),
-        // ⚠️ No pasamos `ref` aquí porque TypeScript lo restringe
+        className: cn(classes, child.props.className),
       });
     }
 

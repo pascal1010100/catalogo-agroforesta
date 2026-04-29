@@ -9,15 +9,12 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// Componentes
 import ProductCard from './ProductCard';
 import ProductDetailModal from './ProductDetailModal';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-
-// Importar datos reales de productos y tipos
+import { cn } from "@/lib/utils";
 import { getFeaturedProducts, type Product } from '@/data/products';
 
-// Obtener productos destacados
 const featuredProducts = getFeaturedProducts();
 
 export default function FeaturedProductsSection() {
@@ -29,73 +26,57 @@ export default function FeaturedProductsSection() {
   const navigationPrevRef = useRef<HTMLButtonElement>(null);
   const navigationNextRef = useRef<HTMLButtonElement>(null);
   const paginationEl = useRef<HTMLDivElement>(null);
-
-  // Usar los productos destacados
   const [products, setProducts] = useState<Product[]>([]);
   
-  // Cargar productos destacados al montar el componente
   useEffect(() => {
     setProducts(featuredProducts);
-  }, [featuredProducts]);
+  }, []);
 
-  // Maneja el cambio de slide
   const handleSlideChange = useCallback((swiper: SwiperType) => {
     setIsBeginning(swiper.isBeginning);
     setIsEnd(swiper.isEnd);
   }, []);
 
-  // Inicializa el swiper
   const onSwiperInit = useCallback((swiper: SwiperType) => {
     swiperRef.current = swiper;
     handleSlideChange(swiper);
     setIsSwiperReady(true);
   }, [handleSlideChange]);
 
-  // Actualiza la navegación cuando los elementos están listos
   useEffect(() => {
     if (isSwiperReady && swiperRef.current) {
       swiperRef.current.update();
     }
-  }, [isSwiperReady, featuredProducts]);
+  }, [isSwiperReady]);
 
-  // Configuración de navegación
   const navigation = {
     prevEl: navigationPrevRef.current,
     nextEl: navigationNextRef.current,
   };
 
   return (
-    <section 
-      className="py-16 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
-      aria-label="Productos destacados"
-    >
+    <section id="productos" className="py-32 bg-background relative z-10">
       <div className="container mx-auto px-4">
-        {/* Encabezado */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '0px 0px -50px 0px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200 text-sm font-medium mb-4">
-            <Star className="w-4 h-4 mr-2 fill-current" aria-hidden="true" />
-            <span>Productos Destacados</span>
+        {/* Header */}
+        <div className="flex flex-col items-center text-center mb-20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest mb-4">
+            <Star className="w-3.5 h-3.5 fill-current" />
+            <span>Colección Seleccionada</span>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Nuestros <span className="text-green-600 dark:text-green-400">Productos</span> Destacados
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
+            Nuestros <span className="text-primary italic">Productos</span> Destacados
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-emerald-500 mx-auto mb-6 rounded-full" aria-hidden="true" />
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Descubre los productos más populares y mejor valorados
+          <div className="w-20 h-1.5 bg-primary rounded-full mb-8" />
+          <p className="text-lg text-muted-foreground max-w-2xl font-light leading-relaxed">
+            Descubre las soluciones más innovadoras y confiables elegidas por nuestros expertos para potenciar tu productividad.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Carrusel */}
-        <div className="relative">
+        {/* Carousel Container */}
+        <div className="relative group">
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
-            spaceBetween={24}
+            spaceBetween={32}
             slidesPerView={1}
             onSwiper={onSwiperInit}
             onSlideChange={handleSlideChange}
@@ -103,105 +84,53 @@ export default function FeaturedProductsSection() {
             pagination={{
               clickable: true,
               el: paginationEl.current || undefined,
-              bulletClass: 'w-2 h-2 inline-block rounded-full bg-gray-300 mx-1 cursor-pointer transition-all duration-300',
-              bulletActiveClass: 'w-6 bg-green-500',
-              renderBullet: (index, className) => {
-                return `<span class="${className}" role="button" tabindex="0" aria-label="Ir al producto ${index + 1}"></span>`;
-              }
+              bulletClass: 'h-1.5 w-1.5 rounded-full bg-muted-foreground/30 mx-1 cursor-pointer transition-all',
+              bulletActiveClass: 'w-8 bg-primary',
             }}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true
-            }}
+            autoplay={{ delay: 5000, disableOnInteraction: false }}
             breakpoints={{
-              640: { 
-                slidesPerView: 1.2,
-                centeredSlides: true 
-              },
-              768: { 
-                slidesPerView: 2,
-                centeredSlides: false 
-              },
-              1024: { 
-                slidesPerView: 3 
-              },
-              1280: { 
-                slidesPerView: 3.5 
-              }
+              640: { slidesPerView: 1.5, centeredSlides: true },
+              1024: { slidesPerView: 3, centeredSlides: false },
             }}
-            className="pb-16"
-            a11y={{
-              prevSlideMessage: 'Producto anterior',
-              nextSlideMessage: 'Siguiente producto',
-              paginationBulletMessage: 'Ir al producto {{index}}',
-            }}
-            loop={true}
-            loopAdditionalSlides={1}
-            watchSlidesProgress={true}
-            updateOnWindowResize={true}
-            observer={true}
-            observeParents={true}
+            className="!pb-20"
           >
             {products.map((product) => (
-              <SwiperSlide 
-                key={product.id} 
-                className="pb-12"
-                role="group"
-                aria-roledescription="slide"
-                aria-label={`${product.name} - ${product.description.substring(0, 50)}...`}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '0px 0px -100px 0px' }}
-                  whileHover={{ y: -5 }}
-                  transition={{ duration: 0.3 }}
-                  className="h-full"
-                >
-                  <ProductCard 
-                    product={product}
-                    onShowDetails={() => setSelectedProduct(product)}
-                  />
-                </motion.div>
+              <SwiperSlide key={product.id}>
+                <ProductCard 
+                  product={product}
+                  onShowDetails={() => setSelectedProduct(product)}
+                />
               </SwiperSlide>
             ))}
           </Swiper>
 
-          {/* Controles de navegación */}
-          <div className="flex items-center justify-center mt-8 space-x-4">
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-center gap-6 mt-4">
             <button
               ref={navigationPrevRef}
-              className={`p-3 rounded-full shadow-md transition-all duration-300 ${
-                isBeginning ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:bg-green-100 dark:hover:bg-gray-700 hover:scale-110'
-              } bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200`}
-              aria-label="Producto anterior"
+              className={cn(
+                "h-12 w-12 rounded-full border flex items-center justify-center transition-all",
+                isBeginning ? "opacity-20 cursor-not-allowed" : "hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-lg"
+              )}
               disabled={isBeginning}
-              aria-disabled={isBeginning}
             >
-              <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+              <ChevronLeft className="w-6 h-6" />
             </button>
-            <div 
-              ref={paginationEl} 
-              className="swiper-pagination flex items-center justify-center space-x-2" 
-              aria-label="Navegación del carrusel"
-            />
+            <div ref={paginationEl} className="flex items-center gap-1" />
             <button
               ref={navigationNextRef}
-              className={`p-3 rounded-full shadow-md transition-all duration-300 ${
-                isEnd ? 'opacity-30 cursor-not-allowed' : 'opacity-100 hover:bg-green-100 dark:hover:bg-gray-700 hover:scale-110'
-              } bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200`}
-              aria-label="Siguiente producto"
+              className={cn(
+                "h-12 w-12 rounded-full border flex items-center justify-center transition-all",
+                isEnd ? "opacity-20 cursor-not-allowed" : "hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-lg"
+              )}
               disabled={isEnd}
-              aria-disabled={isEnd}
             >
-              <ChevronRight className="w-5 h-5" aria-hidden="true" />
+              <ChevronRight className="w-6 h-6" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Modal de detalles */}
       {selectedProduct && (
         <ProductDetailModal
           isOpen={!!selectedProduct}
