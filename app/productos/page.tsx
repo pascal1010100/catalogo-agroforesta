@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import ProductosCliente from "./ProductosCliente"; // ajusta ruta si está en /components
-import { products } from "@/data/products";
+import ProductosCliente from "./ProductosCliente";
+import { createClient } from '@/lib/supabase/server';
 
 type Search = { search?: string };
 
@@ -9,16 +9,29 @@ export default async function ProductosPage(
 ) {
   const { search = "" } = await searchParams;
   const q = search.trim().toLowerCase();
+  
+  const supabase = await createClient();
+  
+  // Fetch products from real DB
+  let query = supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-  const filtered = q
-    ? products.filter(p =>
-        (`${p.name} ${p.description ?? ""}`).toLowerCase().includes(q)
-      )
-    : products;
+  // Simple search if query exists
+  if (q) {
+    query = query.ilike('name', `%${q}%`);
+  }
+
+  const { data: products, error } = await query;
+
+  if (error) {
+    console.error('Error fetching products:', error);
+  }
 
   return (
-    <Suspense fallback={<div>Cargando productos...</div>}>
-      <ProductosCliente products={filtered} query={search} />
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Cargando productos...</div>}>
+      <ProductosCliente products={products || []} query={search} />
     </Suspense>
   );
 }

@@ -2,9 +2,18 @@ import HeaderHero from "./components/HeaderHero";
 import CategorySection from "./components/CategorySection";
 import AboutSection from "./components/AboutSection";
 import FeaturedProductsSection from "./components/FeaturedProductsSection";
+import { createClient } from '@/lib/supabase/server';
 
+export default async function HomePage() {
+  const supabase = await createClient();
+  
+  // Fetch featured products for the home page
+  const { data: featuredProducts } = await supabase
+    .from('products')
+    .select('*')
+    .eq('featured', true)
+    .limit(10);
 
-export default function HomePage() {
   return (
     <main>
       <section id="inicio">
@@ -12,7 +21,7 @@ export default function HomePage() {
       </section>
       <section id="productos">
         <CategorySection />
-        <FeaturedProductsSection />
+        <FeaturedProductsSection initialProducts={featuredProducts || []} />
       </section>
       <section id="aboutsection">
         <AboutSection />
