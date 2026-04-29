@@ -16,6 +16,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CATEGORIES, BRANDS } from '@/data/products';
 import { toast } from 'react-hot-toast';
 
@@ -24,10 +25,10 @@ const productSchema = z.object({
   brand: z.string().min(1, "Selecciona una marca"),
   category: z.string().min(1, "Selecciona una categoría"),
   description: z.string().min(10, "La descripción es muy corta"),
-  price: z.coerce.number().min(0.01, "El precio debe ser mayor a 0"),
+  price: z.number().min(0.01, "El precio debe ser mayor a 0"),
   unidad: z.string().min(1, "Especifica la unidad (ej. unidad, galón, litro)"),
   model: z.string().optional(),
-  stock: z.coerce.number().int().min(0, "El stock no puede ser negativo").default(0),
+  stock: z.number().int().min(0, "El stock no puede ser negativo").default(0),
   featured: z.boolean().default(false),
 });
 
@@ -161,7 +162,7 @@ export default function NewProductPage() {
             <div className="space-y-2">
               <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Precio (Q)</label>
               <input
-                {...register('price')}
+                {...register('price', { valueAsNumber: true })}
                 type="number"
                 step="0.01"
                 placeholder="0.00"
@@ -232,7 +233,7 @@ export default function NewProductPage() {
                 <label className="text-sm font-medium">Stock Inicial</label>
                 <input
                   type="number"
-                  {...register('stock')}
+                  {...register('stock', { valueAsNumber: true })}
                   className="w-full rounded-xl border bg-background px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                 />
               </div>
