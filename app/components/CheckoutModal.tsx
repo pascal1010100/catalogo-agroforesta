@@ -80,18 +80,27 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, totalPrice }
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...form,
-          items: cartItems,
+          usuario: form,
+          productos: cartItems,
           total: totalPrice,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Error al enviar el pedido');
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || 'Error al enviar el pedido');
       }
 
       setSuccess(true);
       clearCart();
+      
+      // Redirect to WhatsApp if url is available
+      if (result.whatsappUrl) {
+        setTimeout(() => {
+          window.open(result.whatsappUrl, '_blank');
+        }, 1500); // Small delay so the user sees the success state first
+      }
     } catch (err) {
       setError('Error al procesar el pedido. Por favor, inténtalo de nuevo.');
       console.error('Error al enviar el pedido:', err);
@@ -292,13 +301,13 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, totalPrice }
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">¡Pedido confirmado!</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Hemos recibido tu pedido correctamente. Pronto nos pondremos en contacto contigo.
+                Hemos recibido tu pedido correctamente. Te estamos redirigiendo a WhatsApp para coordinar el pago y envío.
               </p>
               <Button
                 onClick={onClose}
                 className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl"
               >
-                Cerrar
+                Cerrar y volver a la tienda
               </Button>
             </div>
           )}

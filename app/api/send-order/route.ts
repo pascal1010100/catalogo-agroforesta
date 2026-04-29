@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
+import { createClient } from '@/lib/supabase/server';
 
 // Usa el API key de tu archivo .env.local
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123');
@@ -59,20 +60,47 @@ export async function POST(req: NextRequest) {
     `;
 
     // ENVÍA EL CORREO
+    const supabase = await createClient();
+    const { data: settings } = await supabase
+      .from('store_settings')
+      .select('email, store_name')
+      .eq('id', '00000000-0000-0000-0000-000000000000')
+      .single();
+
+    const adminEmail = settings?.email || process.env.ADMIN_EMAIL || "josemanu0885@gmail.com";
+    const storeName = settings?.store_name || "Agroforesta";
+
     const { data: emailData, error } = await resend.emails.send({
       from: process.env.SENDER_EMAIL || "onboarding@resend.dev",
-      to: process.env.ADMIN_EMAIL || "josemanu0885@gmail.com",
-      subject: "Nuevo pedido desde Agroforesta",
+      to: adminEmail,
+      subject: `Nuevo pedido desde ${storeName}`,
       html,
     });
 
     if (error) {
-      // Registra el error en consola para diagnóstico
       console.error("Error al enviar correo:", error);
-      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+      // We don't fail the whatsapp redirection just because email failed
     }
 
-    return NextResponse.json({ ok: true, emailData });
+    // WhatsApp formatting
+    const whatsappNumber = settings?.whatsapp || '';
+    const cleanNumber = whatsappNumber.replace(/\D/g, ''); // Remove non-numeric
+    
+    let waMessage = `*Nuevo Pedido - ${usuario.nombre}*\n\n`;
+    waMessage += `*Productos:*\n`;
+    productos.forEach(p => {
+      waMessage += `- ${p.name} (x${p.quantity}) Q${p.price.toFixed(2)}\n`;
+    });
+    waMessage += `\n*Total:* Q${total.toFixed(2)}\n\n`;
+    waMessage += `*Datos de entrega:*\n`;
+    waMessage += `Dirección: ${usuario.direccion}\n`;
+    waMessage += `Email: ${usuario.email}\n`;
+    waMessage += `Tel: ${usuario.telefono}`;
+
+    const encodedMessage = encodeURIComponent(waMessage);
+    const whatsappUrl = cleanNumber ? `https://wa.me/${cleanNumber}?text=${encodedMessage}` : null;
+
+    return NextResponse.json({ ok: true, emailData, whatsappUrl });
   } catch (error: unknown) {
     // Registra el error en consola para diagnóstico
     console.error("Error general en send-order:", error);

@@ -17,13 +17,14 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CATEGORIES, BRANDS } from '@/data/products';
 import { toast } from 'react-hot-toast';
+import { createClient } from '@/lib/supabase/client';
+import { useEffect } from 'react';
 
 const productSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-  brand: z.string().min(1, "Selecciona una marca"),
-  category: z.string().min(1, "Selecciona una categoría"),
+  brand_id: z.string().min(1, "Selecciona una marca"),
+  category_id: z.string().min(1, "Selecciona una categoría"),
   description: z.string().min(10, "La descripción es muy corta"),
   price: z.number().min(0.01, "El precio debe ser mayor a 0"),
   unidad: z.string().min(1, "Especifica la unidad (ej. unidad, galón, litro)"),
@@ -39,6 +40,24 @@ export default function EditProductClient({ product }: { product: any }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(product.image);
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+  const [brands, setBrands] = useState<{id: string, name: string}[]>([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function loadData() {
+      const [catsRes, brandsRes] = await Promise.all([
+        supabase.from('categories').select('id, name'),
+        supabase.from('brands').select('id, name')
+      ]);
+      if (catsRes.data) setCategories(catsRes.data);
+      if (brandsRes.data) setBrands(brandsRes.data);
+      setIsLoadingData(false);
+    }
+    loadData();
+  }, [supabase]);
 
   const {
     register,
@@ -48,11 +67,11 @@ export default function EditProductClient({ product }: { product: any }) {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: product.name,
-      brand: product.brand || 'Agroforesta',
-      category: product.category || 'Fertilizantes',
+      brand_id: product.brand_id || '',
+      category_id: product.category_id || '',
       description: product.description,
       price: product.price,
-      unidad: product.unidad || 'unidad',
+      unidad: product.unit || product.unidad || 'unidad',
       model: product.model,
       stock: product.stock || 0,
       featured: product.featured || false,
@@ -127,24 +146,30 @@ export default function EditProductClient({ product }: { product: any }) {
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Marca</label>
                 <select
-                  {...register('brand')}
-                  className="w-full rounded-xl border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  {...register('brand_id')}
+                  disabled={isLoadingData}
+                  className="w-full rounded-xl border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all disabled:opacity-50"
                 >
-                  {Object.values(BRANDS).map(brand => (
-                    <option key={brand} value={brand}>{brand}</option>
+                  <option value="">Seleccionar marca</option>
+                  {brands.map(brand => (
+                    <option key={brand.id} value={brand.id}>{brand.name}</option>
                   ))}
                 </select>
+                {errors.brand_id && <p className="text-xs text-destructive font-medium">{errors.brand_id.message}</p>}
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Categoría</label>
                 <select
-                  {...register('category')}
-                  className="w-full rounded-xl border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                  {...register('category_id')}
+                  disabled={isLoadingData}
+                  className="w-full rounded-xl border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all disabled:opacity-50"
                 >
-                  {Object.values(CATEGORIES).map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                  <option value="">Seleccionar categoría</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
+                {errors.category_id && <p className="text-xs text-destructive font-medium">{errors.category_id.message}</p>}
               </div>
             </div>
 

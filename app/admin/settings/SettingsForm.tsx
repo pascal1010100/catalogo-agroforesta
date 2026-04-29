@@ -37,13 +37,14 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      // In a real scenario, we would call a server action here
-      // const result = await updateSettings(formData);
+      const { updateSettings } = await import('./actions');
+      const result = await updateSettings(formData);
       
-      // Simulate API call for now since we're auditing logic
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success('Configuración guardada correctamente');
+      if (result.error) {
+        toast.error('Error: ' + result.error);
+      } else {
+        toast.success('Configuración guardada correctamente');
+      }
     } catch (error) {
       toast.error('Error al guardar la configuración');
     } finally {

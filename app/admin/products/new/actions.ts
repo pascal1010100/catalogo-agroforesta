@@ -12,11 +12,11 @@ export async function createProduct(data: any) {
     .insert([
       {
         name: data.name,
-        brand: data.brand,
-        category: data.category,
+        brand_id: data.brand_id,
+        category_id: data.category_id,
         description: data.description,
         price: data.price,
-        unidad: data.unidad,
+        unit: data.unidad,
         model: data.model,
         stock: data.stock,
         featured: data.featured,
@@ -62,11 +62,11 @@ export async function updateProduct(id: string, data: any) {
     .from('products')
     .update({
       name: data.name,
-      brand: data.brand,
-      category: data.category,
+      brand_id: data.brand_id,
+      category_id: data.category_id,
       description: data.description,
       price: data.price,
-      unidad: data.unidad,
+      unit: data.unidad,
       model: data.model,
       stock: data.stock,
       featured: data.featured,
