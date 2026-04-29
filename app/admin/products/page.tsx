@@ -115,7 +115,7 @@ export default async function AdminProductsPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-sm font-bold">Q{product.price.toFixed(2)}</p>
+                    <p className="text-sm font-bold">Q{product.price ? Number(product.price).toFixed(2) : '0.00'}</p>
                     <p className="text-[10px] text-muted-foreground uppercase">{product.unidad}</p>
                   </td>
                   <td className="px-6 py-4">
