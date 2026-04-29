@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
 import { ShoppingCart, Eye } from "lucide-react";
-import type { Product } from "@/data/products";
+import { Product } from "@/types";
 import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
@@ -27,7 +27,7 @@ export default function ProductCard({ product, onShowDetails }: ProductCardProps
     return new Intl.NumberFormat('es-GT', {
       style: 'currency',
       currency: 'GTQ',
-    }).format(price);
+    }).format(price || 0);
   };
 
   return (

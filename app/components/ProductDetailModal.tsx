@@ -3,20 +3,7 @@
 import Image from "next/image";
 import { X } from "lucide-react";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-  brand?: string;
-  model?: string;
-  prices?: {
-    minorista?: number;
-    mayorista?: number;
-    "mayorista-48"?: number;
-  };
-}
+import { Product } from "@/types";
 
 interface ProductDetailModalProps {
   product: Product | null;

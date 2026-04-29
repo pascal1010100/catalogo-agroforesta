@@ -15,17 +15,7 @@ import ProductCard from './ProductCard';
 import ProductDetailModal from './ProductDetailModal';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from "@/lib/utils";
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  image: string;
-  price: number;
-  featured: boolean;
-  [key: string]: any;
-}
+import { Product } from '@/types';
 
 export default function FeaturedProductsSection({ initialProducts = [] }: { initialProducts?: Product[] }) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
