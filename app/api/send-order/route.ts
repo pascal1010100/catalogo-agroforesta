@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     const supabase = await createClient();
     const { data: settings } = await supabase
       .from('store_settings')
-      .select('email, store_name')
+      .select('email, store_name, whatsapp')
       .eq('id', '00000000-0000-0000-0000-000000000000')
       .single();
 
