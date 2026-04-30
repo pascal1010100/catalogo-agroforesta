@@ -14,9 +14,9 @@ import {
 interface CartItem {
   id: string;
   name: string;
-  price: number;
+  price?: number | null;
   quantity: number;
-  image?: string;
+  image?: string | null;
 }
 
 interface CheckoutModalProps {
@@ -235,7 +235,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, totalPrice }
                         </div>
                       </div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Q{(item.price * item.quantity).toFixed(2)}
+                        Q{((item.price || 0) * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   ))}

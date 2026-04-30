@@ -8,8 +8,8 @@ import { Button } from "./ui/button";
 type Product = {
   id: string;
   name: string;
-  price: number;
-  image: string;
+  price?: number | null;
+  image?: string | null;
   quantity: number;
 };
 
@@ -35,7 +35,7 @@ export default function CartItem({ product }: CartItemProps) {
   return (
     <div className="flex items-center gap-4 border-b py-3">
       <Image
-        src={product.image}
+        src={product.image || '/placeholder-image.jpg'}
         alt={product.name}
         width={60}
         height={60}
@@ -44,7 +44,7 @@ export default function CartItem({ product }: CartItemProps) {
       <div className="flex-1">
         <p className="font-semibold">{product.name}</p>
         <p className="text-sm text-muted-foreground">
-          Q{product.price.toFixed(2)}
+          Q{product.price ? product.price.toFixed(2) : '0.00'}
         </p>
 
         {/* Controles de cantidad */}
