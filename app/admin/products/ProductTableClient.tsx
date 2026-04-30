@@ -28,7 +28,7 @@ export function ProductTableClient({ initialProducts }: ProductTableClientProps)
 
   // Extract unique categories for filter
   const categories = useMemo(() => {
-    const cats = initialProducts.map(p => p.category).filter(Boolean);
+    const cats = initialProducts.map(p => p.category || '').filter(c => c !== '');
     return ['all', ...Array.from(new Set(cats))];
   }, [initialProducts]);
 
